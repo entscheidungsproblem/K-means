@@ -1,4 +1,3 @@
-#![crate_type = "dylib"]
 extern crate image;
 extern crate rand;
 extern crate rayon;
@@ -18,27 +17,6 @@ use rand::Rng;
 
 use std::fs::File;
 
-/*
-fn load_image() -> Vec<u8> {
-    // Use the open function to load an image from a Path.
-    // ```open``` returns a `DynamicImage` on success.
-    let img = image::open("data/test.jpg").unwrap();
-    let all_pixels = img.raw_pixels();
-    // println!("{:?}", all_pixels);
-    return all_pixels;
-    let pixels: Vec<Pixel> = Vec::new();
-
-    for p in 0..all_pixels.len()/3{
-        pixels.insert(0, Pixel{r: all_pixels[3*p], g:all_pixels[3*p+1], b:all_pixels[3*p+2]});
-    }
-    return pixels;
-}
-
-fn get_point(points: Vec<u8>, index: u8) -> &[u8]{
-    return points.get((3*index) as usize..(3*index+3) as usize).unwrap();
-}
-*/
-
 fn kmeansPP_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <CentroidPixel> {
 
 	let mut centroids:VecDeque<CentroidPixel> = VecDeque::with_capacity(k as usize);
@@ -52,7 +30,6 @@ fn kmeansPP_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <CentroidPixel
 	let i = between.ind_sample(&mut rng);
 
 	insert_centroid(&pixels[i], &mut centroids);
-
 
     for _x in 1..k{
     	let mut distances: VecDeque<f32> = VecDeque::with_capacity(k as usize);
@@ -78,22 +55,15 @@ fn kmeansPP_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <CentroidPixel
     return centroids;
 }
 
-
 fn kmeans_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <CentroidPixel> {
     let mut rng = rand::thread_rng();
     let r = Range::new(0, pixels.len());
-    /*
-    let l = Range::new(0_f32, 100_f32);
-    let c = Range::new(0_f32, 128_f32);
-    let h = Range::new(-180_f32, 180_f32);
-    */
     let mut centroid:VecDeque<CentroidPixel> = VecDeque::with_capacity(k as usize);
     for _x in 0..k{
     	let i = r.ind_sample(&mut rng); 
 	let p = pixels.get(i).unwrap();
 
 	centroid.insert(0, CentroidPixel{p:Pixel{base_colors:p.p.base_colors}, sum:(0_f32, 0_f32, 0_f32), count:0_u32} );
-	//centroid.insert(0, CentroidPixel{p:Pixel{base_colors:(l.ind_sample(&mut rng), c.ind_sample(&mut rng), h.ind_sample(&mut rng))}, sum:(0_f32, 0_f32, 0_f32), count:0_u32} );
     }
     return centroid;
 }
@@ -103,9 +73,6 @@ fn euclidean_distance(p1: &Pixel, p2: &Pixel) -> f32{
     s += (p1.base_colors.0 - p2.base_colors.0).powi(2);
     s += (p1.base_colors.1 - p2.base_colors.1).powi(2);
     s += (p1.base_colors.2 - p2.base_colors.2).powi(2);
-    //s += ((p1.l as i16 - p2.l as i16).abs() as f32).powi(2);
-    //s += ((p1.c as i16 - p2.c as i16).abs() as f32).powi(2);
-    //s += ((p1.h as i16 - p2.h as i16).abs() as f32).powi(2);
     s = s.sqrt();
     return s;
 }
@@ -197,12 +164,23 @@ fn cie94_distance (p1: &Pixel, p2: &Pixel) -> f32{
 	return ( (delta_l/(kl*sl).powi(2)) + (delta_c/(kc*sc).powi(2)) +  delta_h/((kh*sh).powi(2))  ).sqrt();
 }
 
-fn closest(p:&ColorPixel, points: &VecDeque<CentroidPixel>) -> (u8, f32){
+fn contrast_ratio(p1:&Pixel, p2:&Pixel) -> f32{
+	let l1 = p1.base_colors.2;
+	let l2 = p2.base_colors.2;
+	if l1 > l2{
+		return (l1 + 0.05)/(l2 + 0.05);
+	}
+	return (l2 + 0.05)/(l1 + 0.05);
+}
+
+
+fn closest<F: Fn(&Pixel, &Pixel)->f32>(p:&ColorPixel, points: &VecDeque<CentroidPixel>, dist_func: Fn) -> (u8, f32){
     let mut close_p: u8 = 0_u8;
     let mut close_dist = f32::MAX;
     let mut counter = 0_u8;
     for next_p in points{
-        let temp_dist = cie00_distance(&p.p, &next_p.p);
+        let temp_dist = p.p.distance(&next_p.p, dist_func);
+	//let temp_dist = cie00_distance(&p.p, &next_p.p);
         if close_dist > temp_dist {
             close_p = counter;
             close_dist = temp_dist;
@@ -244,8 +222,8 @@ fn display(centroids:&VecDeque<CentroidPixel>, name:String) {
 	// We must indicate the image's color type and what format to save as
 	image::ImageRgb8(imgbuf).save(fout, image::PNG).unwrap();
 }
-/*
 
+/*
 fn centroid(points: HashMap<Pixel, u32>, k: usize) -> HashMap<Pixel, u32> {
     let mut r: u8 = 0_u8;
     let mut g: u8 = 0_u8;
@@ -260,10 +238,8 @@ fn centroid(points: HashMap<Pixel, u32>, k: usize) -> HashMap<Pixel, u32> {
     }
     return vec![r,g,b];
 }
-
  */
 
-//#[derive (PartialEq, Eq)]
 struct Pixel{
     base_colors : (f32, f32, f32),
 }
@@ -284,16 +260,6 @@ struct k_means{
 	pixels: VecDeque<ColorPixel>, 
 	centroids: VecDeque<CentroidPixel>,
 }
-
-
-
-/*
-impl Pixel{
-    fn update(&self, new_colors: (f32, f32, f32)) {
-        self.base_colors = new_colors;
-    }
-}
-*/
 
 struct ColorPixel {
     p: Pixel,
@@ -401,21 +367,9 @@ fn clustering (pixels: &VecDeque<ColorPixel>, centroids: & mut VecDeque<Centroid
 	}
 }
 
+fn main() {
 
-fn contrast_ratio(p1:&Pixel, p2:&Pixel) -> f32{
-	let l1 = p1.base_colors.2;
-	let l2 = p2.base_colors.2;
-	if l1 > l2{
-		return (l1 + 0.05)/(l2 + 0.05);
-	}
-	return (l2 + 0.05)/(l1 + 0.05);
-}
-
-
-
-//fn main() {
-pub extern fn run() {
-    let pixels:VecDeque<ColorPixel> = load_image(String::from("small.jpg"));
+    let pixels:VecDeque<ColorPixel> = load_image(String::from("test6.jpg"));
     //for pixel in pixels.iter(){
     //	println!("{:?}", pixel.p.base_colors);
     //}
@@ -423,7 +377,7 @@ pub extern fn run() {
     //println!("------------------");
     //let mut centroids2: VecDeque<CentroidPixel> = kmeansPP_init(8_u8, &pixels);
     //println!("{}", centroids2.len());
-    let mut centroids: VecDeque<CentroidPixel> = kmeans_init(14_u8, &pixels);
+    let mut centroids: VecDeque<CentroidPixel> = kmeans_init(4_u8, &pixels);
     let white = CentroidPixel {p:Pixel{base_colors:(100.0, 0.0, 270.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
     let black = CentroidPixel {p:Pixel{base_colors:(0.0, 0.0, 0.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
     centroids.insert(0, white);
@@ -445,8 +399,6 @@ pub extern fn run() {
     }*/
     clustering(&pixels, &mut centroids, 50, 0.001);
 
-    
-
     //println!("distance {}", euclidean_distance(pixels.get(0..3).unwrap(),pixels.get(3..6).unwrap()));
     // println!("p1: {:?}, p2: {:?}", pixels.get(0..3).unwrap(), pixels.get(3..6).unwrap());
     //println!("centroid: {:?}", centroid( pixels.get(0..6).unwrap(), 2 ));
@@ -465,5 +417,3 @@ pub extern fn run() {
 	  // for p in pixel{
 	  // println!("{:?}", p.next().unwrap());
 }
-
-

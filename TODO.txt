@@ -1,0 +1,29 @@
+X	Use image to extract pixels
+X	Use palette to convert to LAB and LCH space
+X	Use K-means to cluster (using CIELAB Delta E*: IE76,84,2000)
+
+Organize code: 
+X	allow any distance function (via Pixel)
+k-means struct with impl cluster(ing), closest <AnyPixel>, init with kmeans(++)
+rewrite closest, to allow for permission to use closures (|x| stuff(x))
+macros for loops, names
+add tests (especially for color distances)
+refactor load_image
+switch pixel composition to use traits instead
+
+
+Rayon for parallelization
+K-means++
+Use Box for data on heap?
+
+clap for arguments
+
+
+kmeans
+	init
+	init++
+	clustering(dist_func)
+	closest
+
+pixel distance
+
