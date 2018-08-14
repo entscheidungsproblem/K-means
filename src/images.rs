@@ -72,11 +72,11 @@ fn centroid(points: HashMap<Pixel, u32>, k: usize) -> HashMap<Pixel, u32> {
  */
 
 pub fn load_image( name: String) -> VecDeque<ColorPixel>{
-	let mut filename = String::from("data/");
-	filename.extend(name.chars());
+	//let mut filename = String::from("data/");
+	//filename.extend(name.chars());
 	//filename.extend(".png".chars());
 	
-	let img1 = open(filename).unwrap();
+	let img1 = open(name).unwrap();
     	//if img1.is_err(){process::exit(1); }
     	let img2:Option<&RgbImage> = img1.as_rgb8();
     	if img2.is_none(){ process::exit(1); }

@@ -22,3 +22,20 @@ pub struct ColorPixel {
     //centroid: u32,
     pub count: u32,
 }
+
+
+trait Get {
+    fn get_pixel(&mut self) -> &Pixel;
+}
+
+impl Get for CentroidPixel {
+    fn get_pixel(&mut self) -> &Pixel{
+        return &self.p;
+    }
+}
+
+impl Get for ColorPixel {
+    fn get_pixel(&mut self) -> &Pixel{
+        &self.p
+    }
+}

@@ -17,16 +17,16 @@ use std::collections::VecDeque;
 //use std::fs::File;
 
 
-pub fn closest(p:&ColorPixel, points: &VecDeque<CentroidPixel>, dist_func: &str) -> (u8, f32) {
+pub fn closest(p:&Pixel, points: &VecDeque<CentroidPixel>, dist_func: &str) -> (u8, f32) {
     let mut close_p: u8 = 0_u8;
     let mut close_dist = f32::MAX;
     let mut counter = 0_u8;
     for next_p in points{
 		let temp_dist: f32 = match dist_func {
-			"euclidean" => euclidean_distance(&p.p, &next_p.p),
-			"cie00" => cie00_distance(&p.p, &next_p.p),
-			"cie94" => cie94_distance(&p.p, &next_p.p),
-			"contrast" => contrast_ratio(&p.p, &next_p.p),
+			"euclidean" => euclidean_distance(p, &next_p.p),
+			"cie00" => cie00_distance(p, &next_p.p),
+			"cie94" => cie94_distance(p, &next_p.p),
+			"contrast" => contrast_ratio(p, &next_p.p),
 			_ => -1f32,
 		};
 

@@ -26,7 +26,7 @@ use std::fs::File;
 fn cluster (pixels: &VecDeque<ColorPixel>, centroids: & mut VecDeque<CentroidPixel>) {
 	println!("-----Clustering-----");
 	for pixel in pixels.iter(){
-    		let (i, _dist) = closest(pixel, &centroids, "cie00");
+    	let (i, _dist) = closest(&pixel.p, &centroids, "cie00");
 		let mut c = centroids.get_mut(i as usize).unwrap();
 		let num = pixel.count;
 		
@@ -46,7 +46,6 @@ fn cluster (pixels: &VecDeque<ColorPixel>, centroids: & mut VecDeque<CentroidPix
 	else{
 		println!("Centroid Error. Count = {}", c.count);
 	}
-	// TODO else, bad centroid
     }
 }
 

@@ -1,3 +1,6 @@
+
+#[macro_use]
+extern crate clap;
 extern crate image;
 extern crate rand;
 extern crate rayon;
@@ -18,9 +21,10 @@ use images::load_image as load_image;
 
 use clustering::init::kmeans_init as kmeans_init;
 
+use clap::{Arg, App, SubCommand};
 
 
-use self::palette::{Lch,LabHue,IntoColor,Srgb};
+//use self::palette::{Lch,LabHue,IntoColor,Srgb};
 
 //use rayon::prelude::*;
 //use rayon::collections::hash_map;
@@ -34,53 +38,43 @@ use self::rand::Rng;
 
 use std::fs::File;
 
+use std::fs;
+use std::path::{PathBuf, Path};
+
+
 fn main() {
 
-    let pixels:VecDeque<ColorPixel> = load_image(String::from("test.jpg"));
-    //for pixel in pixels.iter(){
-    //	println!("{:?}", pixel.p.base_colors);
-    //}
-   
-    //println!("------------------");
-    //let mut centroids2: VecDeque<CentroidPixel> = kmeansPP_init(8_u8, &pixels);
-    //println!("{}", centroids2.len());
+
+    let yaml = load_yaml!("cli.yml");
+    let matches = App::from_yaml(yaml).get_matches();
+
+    let _srcdir = fs::canonicalize(&PathBuf::from(matches.value_of("INPUT").unwrap()));
+
+    if _srcdir.is_err(){
+        println!("Path error!");
+        return;
+    }
+    let srcdir = _srcdir.unwrap();
+    if !(srcdir.exists()){
+        println!("Path doesn't exist!");
+        return;
+    }
+    let full_path = String::from(srcdir.to_str().unwrap());
+    println!("Path does exist: {:?}", full_path);
+    let pixels:VecDeque<ColorPixel> = load_image(full_path);
     let mut centroids: VecDeque<CentroidPixel> = kmeans_init(6_u8, &pixels);
-    let white = CentroidPixel {p:Pixel{base_colors:(100.0, 0.0, 270.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
-    let black = CentroidPixel {p:Pixel{base_colors:(0.0, 0.0, 0.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
+    //let white = CentroidPixel {p:Pixel{base_colors:(100.0, 0.0, 270.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
+    //let black = CentroidPixel {p:Pixel{base_colors:(0.0, 0.0, 0.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
     //centroids.insert(0, white);
     //centroids.insert(0, black);
-    //for c in centroids.iter(){
-    //	println!("starting {:?}", c.p.base_colors);
-    //}
-	//println!("{}", centroids.len());
-    /*display(&centroids, String::from("color"));
-    for x in 1..100{
-    	cluster(&pixels, &mut centroids);
-	println!("{}", centroids.len());
-	//for c in centroids.iter(){
-	//	println!("{}th cluster {:?}", x, c.p.base_colors);
-	//}
-	let mut filename = String::from("color");
-	filename.extend(x.to_string().chars());
-	display(&centroids, filename);
-    }*/
     cluster_all(&pixels, &mut centroids, 50, 0.001);
 
-    //println!("distance {}", euclidean_distance(pixels.get(0..3).unwrap(),pixels.get(3..6).unwrap()));
-    // println!("p1: {:?}, p2: {:?}", pixels.get(0..3).unwrap(), pixels.get(3..6).unwrap());
-    //println!("centroid: {:?}", centroid( pixels.get(0..6).unwrap(), 2 ));
+    //for c in centroids{
+        //let rgb_color = lch_to_rgb(c.p.base_colors);
+        //let lch_color: Lch = Lch::new(c.p.base_colors.0, c.p.base_colors.1, Lch::from_degrees(c.p.base_colors.2));
+        //Pixel{base_colors:(lch_color.l, lch_color.chroma, lch_color.hue.to_degrees())};
+        //println!("{:?}, {:?}", c.p.base_colors, rgb_color);
+    //}
 
-    /* println!("{:?}", pixels);
-    for x in 0..(pixels.len()/3){
-    		println!("{:?}", pixels.get((3*x) as usize..(3*x + 3) as usize).unwrap());
-    }*/
-
-    // let all_pixels = img.raw_pixels();
-    // let mut _pixel  = all_pixels.chunks(3);
-    // gen_starting_centre(5_u8);
-    // let p1 = vec![1, 20, 30];
-    // let p2 = vec![100, 200, 130];
-    // euclidean_distance(p1,p2);
-	  // for p in pixel{
-	  // println!("{:?}", p.next().unwrap());
+    
 }

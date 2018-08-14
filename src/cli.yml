@@ -1,0 +1,9 @@
+name: K-Means
+version: "0.1.0"
+author: Patrick <entscheidungsproblem@protonmail.com>
+about: Extracts colors from images
+args:
+    - INPUT:
+        help: Sets the input file to use
+        required: true
+        index: 1

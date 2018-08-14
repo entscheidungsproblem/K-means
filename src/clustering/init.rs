@@ -41,7 +41,7 @@ pub fn kmeansPP_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <CentroidP
     	let mut distances: VecDeque<f32> = VecDeque::with_capacity(k as usize);
     	let mut sum = 0_f32;
     	for p in 0..pixels.len(){
-		let close = closest(&pixels[p], &centroids, "cie00").1;
+		let close = closest(&pixels[p].p, &centroids, "cie00").1;
 		let square = close.powi(2);
 		distances.insert(p, square);
 		//let &mut d = distances.get_mut(p).unwrap();
