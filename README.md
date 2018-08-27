@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/entscheidungsproblem/K-means.svg?branch=master)](https://travis-ci.com/entscheidungsproblem/K-means)
+
 # K-means
 I decided to work on this project to help me learn Rust and to create a precise color extraction algorithm that I had playing with in Python.
 
