@@ -1,4 +1,4 @@
-
+#[cfg_attr(feature = "cargo-clippy", allow(needless_lifetimes))]
 #[macro_use]
 extern crate clap;
 extern crate image;
