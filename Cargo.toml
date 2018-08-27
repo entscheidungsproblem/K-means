@@ -9,3 +9,6 @@ rand = "0.4.2"
 rayon = "1.0.1"
 palette = "0.3.0"
 clap = {version = "2.32.0", features = ["yaml"]}
+
+[badges]
+travis-ci = { repository = "entscheidungsproblem/K-means", branch = "master" }
