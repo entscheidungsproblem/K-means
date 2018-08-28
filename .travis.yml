@@ -1,22 +1,24 @@
 language: rust
-
 sudo: required
-
 rust:
-  - stable
-  - beta
-  - nightly
-
+- stable
+- beta
+- nightly
 matrix:
   allow_failures:
-    - rust: nightly
-
+  - rust: nightly
 addons:
   apt:
     packages:
-      - kcov
-
+    - kcov
 after_success: |
   kcov --exclude-pattern=/.cargo,/usr/lib target/cov target/debug/K_means-* &&
   bash <(curl -s https://codecov.io/bash) &&
   echo "Uploaded code coverage"
+deploy:
+  provider: releases
+  api_key:
+    secure: EX0CCq+xLyksGTFhA8yasV1RfmVPsFvXlvy5zpyHIWHIoqWmBZoQbMFoZKO1FOChHLmMXawFSettEB0QjcwGRCLL/uuW8Y/jm1+46Dpk2biXjLroqair/HCGLieauLR/BLf0mUI3xFzpZCX45fjx8IQjBRmy8PLLOzQK0ZZQ0DwV+k9tSvBP4DsC3VPXaAAlLi09B385sUlCV5aiYvn5FJ53sAidzJA0oNR/3X6lFcy4sKfk8p3mSTTYXiwvwf1tvFlLpBk9bDKZ4P8XTG9Oo7T0lut7uvTs9OHkAOD7juZ65qcpotTRtBekkbKVintLvMzQ6r0xUG3g9UQ/gyQwWbCXvEur1nqZHBl6ywRvGP82LNunF8PXmugH/i0hkan//YwHf5J5Zaof86KhsguCIrLnXUUXEvEEKEthQMKDaLOF/T2sa/Jzo+3erdOwHtR+9+/xJwY37fHCp46LKS0rsvJtP5h1ua7jiQ3Y4ml9uU+ositqQpGkanS7JKLQCGw5AhcTMbRDP+hthYcxh5SZqSwk9BOTyVc/7xFx3oTx+IaruD+JLUdpbo4Q9r6mMKdKjUE2TnlB7CpKHXlEJK1pcn3m3WyImDbcQE5h/aknJSBZ0iLDCg4Hy33kCnMrtGwkNpwct1qb44rho/U9yCSSchzMbAU4t+AEHS/7fRjK7uo=
+  file: "./target/debug/K-means"
+  on:
+    repo: entscheidungsproblem/K-means
