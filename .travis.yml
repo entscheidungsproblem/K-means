@@ -7,13 +7,12 @@ rust:
 matrix:
   allow_failures:
   - rust: nightly
-  
 before_deploy:
-  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+- git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
 deploy:
   provider: releases
   api_key:
-    secure: Ans3BhoZhnVVuHS/WszAs/OMtbpvqmOo1YXekRltxtcmUgw8GPS4klbFHB2GyghPv+oeLp0j9WSzqRifoxZuuD+Nw/FN4a9FyK8OaTIJlNk8obklClpdHq4V7CO0ZAkN5fWZhlb3dJ+rn6KYQQe82JLwkvw5bjP4i3G2jsKqYebwpBhBhkQ4HVC/g0G1B77Nyi3+Dz+sqsCej7Z/wTakcsw1aKeT/I1gxDna38CA6czKLIU4zVlvuvNpZWUWI65vi2mIV3Cc87tcHc99mt91tbnmQ2S1iXGLcnu23avxuW90k81ACKPw2Js/Z28qXKySsiunwNzF8XaKSt1TbPIsbACBZ8ModVOBzHzLN1teeZVbBMmn/sdO5tyvezywEhWoxCslG1V87d/sT3UntGJk7cfInm0t6ESr++j0c/Cjac5IjOscfYvUEoX137947mr8Npqn78/M3ZpSrGH/7aYGDpTNTUtgqv6xmqPvP5bvbNckEZqQhH9fVHCRmI/suV0iX58ixB15YST21cWa6N31MTZqYRhGtijZVhXkv6GAmhLk5N0NzV2iY1oZ56rV2tKeeFMnOV7XwGt8srToFKiaHF+t6DIj1Gie2Rk4lrhelhVVmRTsDJPQw7/Vvl3+1h5biO4cWbe4d+zBCdEGQKJpt56iNo+KJZaQeDdI316Y030=
-  file: target/debug/K-means
+    secure: HAwQJ/mtNCQIANEl+ZkD9HTT6jW+aNCSh3p+1Rspq6Q3/ME0SGW/ROj/CEa9Aogt3eGQFeg6p4KMcQhfOvd/ez9vWLRGzv7oZ8p7eGGA6GX9ASrQ0bM19ijQzTUC97uQ/dcjIxBSa86egpPq/pTGnpTYD8VkLLiLbKzmIauboQT6Q4aVOY4tpOIsv6lBY8qZICxjiU0tf+KnRZ9gpknhlXLz6Q7fKQYG46om+l7p+HRNK2DagiwZzTIE2AfoZhUEW8qOtXF0k5CB5rIBStDRIxcR58j7ODKEvmfi9JEJFKYLB5BmmhFbEPDltCrRAXAfAak8nDaeee2EHd7PRzl29taff5tqvgghC1sttrIF7cCV8vj3qjVNe66IS1FIroE7Q1pW0uuK726kcYXzeaaxPqhuka/i4xQR4r4EH9h9lF4pSyGy5OYJY2wppPG1KFRwXs3JMeIoF4mOQYcgNRKJWZgsdvC50TlcinKz1lx34KnvFz0EYHEVEO8OxgSD/1czxt8+/+oLdKM3/rjbj/at79I7W+F7GwphjGoPoeQqo4SCLqFnKxyDQxctCkgsEdOXRbfV7b2NJo6rM6EDRn7uNQp/oipSMMgp5nMo7XYKX469scbgvotpVMHW1NdHa39xVso3RfJse0yKzisowv/DhFIX6VqMqVaNPUPe2EeG0f8=
+  file: "./target/debug/K-means"
   on:
-    condition: $TRAVIS_RUST_VERSION = stable
+    repo: entscheidungsproblem/K-means
