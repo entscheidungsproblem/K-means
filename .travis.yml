@@ -16,3 +16,4 @@ deploy:
   file: "K-means"
   on:
     repo: entscheidungsproblem/K-means
+    condition: $TRAVIS_RUST_VERSION = stable
