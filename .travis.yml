@@ -17,14 +17,13 @@ after_success: |
   echo "Uploaded code coverage"
   
 before_deploy:
-      - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
 deploy:
   provider: releases
   api_key:
     secure: "rV605KvJ4aOnbGXFY5OnFlDaykIkNfJYRXgPr1AgR3qvehG6sv8Q0SbFh6JbWv5y5r15ydDwMB7ZcHglhLbkQNjHFVGVb+nF66AISAd1oe6XY20w0wC/y2jNIKX4xHE+8SqG9yOBTScAodDZxxQRkQlvhRDQ/MIAiOMR6Kr/11GHgikSXivmKS/2KpXqG2g6S7CEI8i4xZUWdRUopbrfdOUAheiqWXlFroqbaJLmWnBzf5acnLwZgMKPxtw/W26D4+j3eaFb5AlA+gp0Ml+G1BeAavdkuNzVxyigPWBo+S7Ru9bpxbrkEaykQYXKcpe6rcvM9rBS/pMhy/zlukHL5kUfgiIgaDJdqTIVQ1Pu1W6FBNRrqVVj3eFaFnA4irw6hpZikcuV6HsG5jTdHfRm+iVqjYyHvXhYDDmI+7p1KhTwmnwgRfFiO6NSJBVNWvGHYI1AgsOqn+11KU0NPmBm+sbxSRarlpyqzGscGp4mxDscDUp2JQ+cwob8IuuotYJEUN9wgsZjvAQLdaaQzIU4iwkbn/+bZswoNb+semqpd6EKqnCdFV9Xb+Tz1iarfk7bbXfb3f7rnWNDk7s1vgVKcJmEAEdl6tjg5WEVrP+boJGNI7mvjhjpixaoNVterHPf3qxOopCMjkXUt5oM4Oi+Zrub9AGxHX5BkxxgJYfnqxI="
   file: K-means
   on:
-    repo: entscheidungsproblem/K-means
     condition: $TRAVIS_RUST_VERSION = stable
 
 before_script:
