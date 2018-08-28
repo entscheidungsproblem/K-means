@@ -8,31 +8,12 @@ matrix:
   fast_finish: true
 cache: cargo
 
-# Thanks to https://medium.com/@Razican/continuous-integration-and-code-coverage-report-for-a-rust-project-5dfd4d68fbe5
-# Add clippy
 before_script:
-  - |
-      if [[ "$TRAVIS_RUST_VERSION" == "nightly" ]]; then
-        export NIGHTLY=true
-      fi
-  - |
-      if [[ $NIGHTLY ]]; then 
-        ( ( cargo install clippy && export CLIPPY=true ) || export CLIPPY=false );
-        rustup component add rustfmt-preview;
-      fi  
-  - export PATH=$PATH:~/.cargo/bin
+  - rustup component add rustfmt-preview
   
 script:
-  - |
-      if [[ $NIGHTLY ]]; then
-        if [[ $CLIPPY ]]; then
-          echo Running clippy
-          cargo clippy;
-        fi
-        cargo fmt --all -- --check;
-      fi
+  - cargo fmt --all -- --check;
   - cargo build
-
 
 sudo: true
 
