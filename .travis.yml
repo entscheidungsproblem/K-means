@@ -22,3 +22,11 @@ deploy:
   file: "./target/debug/K-means"
   on:
     repo: entscheidungsproblem/K-means
+
+before_script:
+- rustup component add rustfmt-preview
+
+script:
+- cargo fmt --all -- --check
+- cargo build
+- cargo test
