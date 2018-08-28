@@ -17,6 +17,6 @@ addons:
       - kcov
 
 after_success: |
-  kcov --exclude-pattern=/.cargo,/usr/lib --verify target/cov target/debug/K_means-* &&
+  kcov --exclude-pattern=/.cargo,/usr/lib target/cov target/debug/K_means-* &&
   bash <(curl -s https://codecov.io/bash) &&
   echo "Uploaded code coverage"
