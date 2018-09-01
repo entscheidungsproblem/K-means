@@ -17,7 +17,6 @@ deploy:
   file: "target/debug/deps/K_means-*"
   on:
     repo: entscheidungsproblem/K-means
-    branches:
-      only:
-        - master
+    tags: true
+    branches: master
     condition: $TRAVIS_RUST_VERSION = stable
