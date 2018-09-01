@@ -25,6 +25,8 @@ script:
       if [[ $NIGHTLY ]]; then
         cargo fmt --all -- --check;
       fi
+  - |
+      cargo build --verbose;
       
 before_deploy:
   - pwd;
