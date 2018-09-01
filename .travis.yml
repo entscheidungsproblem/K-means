@@ -6,9 +6,26 @@ rust:
 - nightly
 matrix:
   allow_failures:
-  - rust: nightly
-before_deploy:
-- git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+    - rust: nightly
+  fast_finish: true
+  
+before_script:
+  - |
+      if [[ "$TRAVIS_RUST_VERSION" == "nightly" ]]; then
+        export NIGHTLY=true
+      fi
+  - |
+      if [[ $NIGHTLY ]]; then 
+        rustup component add rustfmt-preview;
+      fi  
+  - export PATH=$PATH:~/.cargo/bin
+  
+script:
+  - |
+      if [[ $NIGHTLY ]]; then
+        cargo fmt --all -- --check;
+      fi
+  
 deploy:
   provider: releases
   api_key:
