@@ -25,7 +25,11 @@ script:
       if [[ $NIGHTLY ]]; then
         cargo fmt --all -- --check;
       fi
-  
+      
+before_deploy:
+  - pwd;
+  - ls -la;
+
 deploy:
   provider: releases
   api_key:
