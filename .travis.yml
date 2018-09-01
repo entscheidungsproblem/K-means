@@ -1,46 +1,38 @@
 language: rust
 sudo: required
+cache: cargo
 rust:
 - stable
 - beta
 - nightly
 matrix:
   allow_failures:
-    - rust: nightly
+  - rust: nightly
   fast_finish: true
-  
 before_script:
-  - |
-      if [[ "$TRAVIS_RUST_VERSION" == "nightly" ]]; then
-        export NIGHTLY=true
-      fi
-  - |
-      if [[ $NIGHTLY ]]; then 
-        rustup component add rustfmt-preview;
-      fi  
-  - export PATH=$PATH:~/.cargo/bin
-  
+- |
+  if [[ "$TRAVIS_RUST_VERSION" == "nightly" ]]; then
+    export NIGHTLY=true
+  fi
+- "if [[ $NIGHTLY ]]; then \n  rustup component add rustfmt-preview;\nfi  \n"
+- export PATH=$PATH:~/.cargo/bin
 script:
-  - |
-      if [[ $NIGHTLY ]]; then
-        cargo fmt --all -- --check;
-      fi
-  - |
-      cargo build --verbose;
-      
-before_deploy:
-  - pwd;
-  - ls -la;
+- |
+  if [[ $NIGHTLY ]]; then
+    cargo fmt --all -- --check;
+  fi
+- 'cargo build --verbose;
 
+'
+before_deploy:
+- pwd;
+- ls -la;
 deploy:
   provider: releases
   api_key:
-    secure: "hXhtxCkciLLsfb8CvgyGzzrKAvWTrXYu1GwHSIHG4aAsn+k87vW63MSC79o7lMo6Ri69OMpKscP92jxkBAUwunjh7w8mh0/1NEzGNSyp3W3WaKCrJx6XnzEQTbnI3TJWzbL+y67uqAmYnsY9pGN7Gwd3EIdfmD5RCIhsUIHs7aXzIab/Y5SVX0tlhYyrX5MTGCjd0wWgQw83C23dprcJnPTqSVvHS8NL02iq2KV1bMsdfK5nXL049ZThFsIzllp6Iy9PBf+yXNVmtrnEIb+M6usmz97U6WGZBk5a3tCyOq+kewp+KWWylWzaR+/ZwsY1s7K79Hj51lCG72t6meA9RU01pzJU7wUqQ+PBKpDR/8fYzXCqjUhijFSja7tFeKk0nmZut527TWh0yzm58mh2g7Lvieyk9xRgST7nbP5EVuMISpAvpJ8loFBK9MI4LPv1g4sL1yOkoICzyvEVyDE8kevD1Ub8vFvE2F2PEaQGAEMv8RW+ZcyVXjEaGMBDP7wP/2uTWw9MxgazhTY+8r5CPUR0lYpup9YKSvgvfH0XrF4Zgw0sDQu69tBJq8FbRnuKNaXn+NO8N2FvL3jux899ECBRJ3UUvjIaDOpn4AYst29l6WK7gDbNRduELc8r/6qJTeooAYdJWCvjMAhvA9JNz2XKteFvK8O4vRxSq/FREBA="
-  file_glob: true
-  #file: "target/debug/deps/K_means-*"
-  file: "TODO.txt"
+    secure: NblCrbgWorneNVXcsSovShTi0srjfnKA80x9nI3NWBBz9R1U4yr4r9OiDPBjJURNmVzfBvnav+gn1ugHULoLg36L58sV8Rj8E+QskN5KTeB7itEFvQBJHwRiN9riP/+wFKaaezIR26XqI6hQPAz4pDqf/QP94DNVWgIO9EEGKLzDgMQt++3s7kaIV99dws0y7LYmbdDiBNhrPBN9MQy3aTymtYADZNRz/XXk+NoY18YByoDQaXB4BDwIdHVqoynX32p/h1yyL8QVj+TbjuskcTZUrj82J8aEZ/DlSux7qiPy1/TYFRQ/sx/MxLF25e6B26fXMvmWksJFGxTCt9BhPHETS2+kKNXomFCNKaC3oY1b9b/xmHJVHjuAQRk9KCw5kznGb4QULTA4I3nUojbvZqlQIYAZnS+h+b/E6FwGKG3rLwZEWQuPl9I2OIP+bMwWsSdKwip1mvkydO8SZN+CLp3g+NgR5dCQ99sw/sHLrq76ZDJ8y8jWN/cSio51W9vSmP6uhVbITjYP78/LBaAKIY1CN46DTuXNMV6AQeJChs6YKTCk2qxK9C2kbReE2Lg5ga0OaZrhBaLECPz5XZju7q2TE97kR9yUu093u769C4YmqX1EMAilPgOkkZQUF7sEi/YKMp2bR7EwBbqBWUiHp1MyfmuSgPDibMeY3ykSJNY=
+  file: TODO.txt
   on:
     repo: entscheidungsproblem/K-means
-    tags: true
     branches: master
     condition: $TRAVIS_RUST_VERSION = stable
