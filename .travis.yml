@@ -29,9 +29,6 @@ before_deploy:
 - ls -la target/debug;
 - git status;
 - git branch;
-- git checkout master;
-- git status;
-- git branch;
 
 deploy:
   provider: releases
@@ -42,5 +39,4 @@ deploy:
     - "target/debug/K-means"
   on:
     repo: entscheidungsproblem/K-means
-    branch: master
     condition: $TRAVIS_RUST_VERSION = stable
