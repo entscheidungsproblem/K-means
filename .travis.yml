@@ -25,9 +25,10 @@ script:
     cargo fmt --all -- --check;
   fi
 - if [[ $RELEASE ]]; then
-    cargo build --verbose --release;
+    echo "Building optimized version for release"
+    cargo build --verbose --release
   else
-    cargo build --verbose;
+    cargo build --verbose
   fi
 
 deploy:
