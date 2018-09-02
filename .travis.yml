@@ -31,7 +31,7 @@ deploy:
   provider: releases
   api_key:
     secure: NblCrbgWorneNVXcsSovShTi0srjfnKA80x9nI3NWBBz9R1U4yr4r9OiDPBjJURNmVzfBvnav+gn1ugHULoLg36L58sV8Rj8E+QskN5KTeB7itEFvQBJHwRiN9riP/+wFKaaezIR26XqI6hQPAz4pDqf/QP94DNVWgIO9EEGKLzDgMQt++3s7kaIV99dws0y7LYmbdDiBNhrPBN9MQy3aTymtYADZNRz/XXk+NoY18YByoDQaXB4BDwIdHVqoynX32p/h1yyL8QVj+TbjuskcTZUrj82J8aEZ/DlSux7qiPy1/TYFRQ/sx/MxLF25e6B26fXMvmWksJFGxTCt9BhPHETS2+kKNXomFCNKaC3oY1b9b/xmHJVHjuAQRk9KCw5kznGb4QULTA4I3nUojbvZqlQIYAZnS+h+b/E6FwGKG3rLwZEWQuPl9I2OIP+bMwWsSdKwip1mvkydO8SZN+CLp3g+NgR5dCQ99sw/sHLrq76ZDJ8y8jWN/cSio51W9vSmP6uhVbITjYP78/LBaAKIY1CN46DTuXNMV6AQeJChs6YKTCk2qxK9C2kbReE2Lg5ga0OaZrhBaLECPz5XZju7q2TE97kR9yUu093u769C4YmqX1EMAilPgOkkZQUF7sEi/YKMp2bR7EwBbqBWUiHp1MyfmuSgPDibMeY3ykSJNY=
-  file: "target/debug/K-means" 
+  file: "TODO.txt" 
   on:
     repo: entscheidungsproblem/K-means
     all_branches: true
