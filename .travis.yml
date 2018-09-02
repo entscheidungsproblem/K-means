@@ -28,7 +28,10 @@ before_deploy:
 - ls -la target;
 - ls -la target/debug;
 - git status;
-- git branch;  
+- git branch;
+- git checkout origin/master;
+- git status;
+- git branch;
 
 deploy:
   provider: releases
