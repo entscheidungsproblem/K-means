@@ -1,5 +1,5 @@
 name: K-Means
-version: "0.1.0"
+version: "0.1.3"
 author: Patrick <entscheidungsproblem@protonmail.com>
 about: Extracts colors from images
 args:
@@ -7,3 +7,16 @@ args:
         help: Sets the input file to use
         required: true
         index: 1
+    - json:
+        short: j
+        global: true
+        help: Saves json data
+    - yaml:
+        short: y
+        help: Saves yaml data
+    - sh:
+        short: s
+        help: Saves sh data
+    - css:
+        short: c
+        help: Saves css data

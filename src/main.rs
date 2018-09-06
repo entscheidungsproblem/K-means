@@ -11,7 +11,7 @@ pub mod data;
 pub mod clustering;
 pub mod export;
 
-use export::{export_json, export_yaml, export_sh};
+use export::{export_json, export_yaml, export_sh, export_css};
 use clustering::cluster_all;
 
 use data::Pixel as Pixel;
@@ -69,9 +69,10 @@ fn main() {
     //let black = CentroidPixel {p:Pixel{base_colors:(0.0, 0.0, 0.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
     //centroids.insert(0, white);
     //centroids.insert(0, black);
-    cluster_all(&pixels, &mut centroids, 50, 0.001);
-    export_sh(centroids, full_path);
-    
+    cluster_all(&pixels, &mut centroids, 50, 0.01);
 
-    
+    if matches.is_present("json")   { export_json(&centroids, full_path.clone(), "colors.json".to_string()); }
+    if matches.is_present("yaml")   { export_yaml(&centroids, full_path.clone(), "colors.yml".to_string()); }
+    if matches.is_present("sh")     { export_sh(&centroids, full_path.clone(), "colors.sh".to_string()); }
+    if matches.is_present("css")    { export_css(&centroids, full_path.clone(), "colors.css".to_string()); }
 }

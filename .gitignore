@@ -12,3 +12,7 @@ Cargo.lock
 /target/
 **/*.rs.bk
 /data/
+colors.yml
+colors.css
+colors.json
+colors.sh
