@@ -68,7 +68,7 @@ fn main() {
     //centroids.insert(0, white);
     //centroids.insert(0, black);
     cluster_all(&pixels, &mut centroids, 50, 0.001);
-    export_json(centroids, full_path);
+    export_yaml(centroids, full_path);
     
 
     
@@ -84,10 +84,26 @@ fn export_json(centroids: VecDeque<CentroidPixel>, full_path: String){
 		let rgb_color: rgb::Rgb<rgb::Linear> = lch.into_rgb();
         //println!("{:?}", ((rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8));
         if (i != 0){println!(",");}
-        print!("\t\t\"color{}\":\t\"#{:0width$x}{:0width$x}{:0width$x}\"", i, (rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8, width=2);
+        print!("\t\t\"color{}\":\t\"#{:0width$X}{:0width$X}{:0width$X}\"", i, (rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8, width=2);
         
         i+=1;
     }
     print!("\n\t}}\n}}");
     
+}
+
+fn export_yaml(centroids: VecDeque<CentroidPixel>, full_path: String){
+    println!("wallpaper: {}", full_path);
+    println!("colors:");
+    
+    let mut i = 0;
+    for c in centroids{
+        let _lch = c.p.base_colors;
+		let lch: Lch = Lch::new(_lch.0, _lch.1, LabHue::from(_lch.2));
+		let rgb_color: rgb::Rgb<rgb::Linear> = lch.into_rgb();
+        //println!("{:?}", ((rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8));
+        println!("\tcolor{}: #{:0width$X}{:0width$X}{:0width$X}", i, (rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8, width=2);
+        
+        i+=1;
+    }   
 }
