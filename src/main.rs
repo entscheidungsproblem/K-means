@@ -62,12 +62,15 @@ fn main() {
     let full_path = String::from(srcdir.to_str().unwrap());
     println!("Path does exist: {:?}", full_path);
     let pixels:VecDeque<ColorPixel> = load_image(full_path);
+    println!("1!");
     let mut centroids: VecDeque<CentroidPixel> = kmeans_init(7_u8, &pixels);
+    println!("2!");
     //let white = CentroidPixel {p:Pixel{base_colors:(100.0, 0.0, 270.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
     //let black = CentroidPixel {p:Pixel{base_colors:(0.0, 0.0, 0.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
     //centroids.insert(0, white);
     //centroids.insert(0, black);
     cluster_all(&pixels, &mut centroids, 50, 0.001);
+    println!("3!");
 
     //for c in centroids{
         //let rgb_color = lch_to_rgb(c.p.base_colors);

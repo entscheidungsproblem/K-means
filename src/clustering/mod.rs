@@ -60,7 +60,7 @@ pub fn cluster_all (pixels: &VecDeque<ColorPixel>, centroids: & mut VecDeque<Cen
 		return delta/centroids.len() as f32;	
 	}
 	
-	display(&centroids, String::from("color"));
+	// display(&centroids, String::from("color"));
 	let mut distance: VecDeque<f32> = VecDeque::with_capacity(centroids.len());
 	for c in centroids.iter(){
 		let val = (c.p.base_colors.0.powi(2) + c.p.base_colors.1.powi(2) + c.p.base_colors.2.powi(2)).sqrt();
@@ -75,7 +75,7 @@ pub fn cluster_all (pixels: &VecDeque<ColorPixel>, centroids: & mut VecDeque<Cen
 		println!("{}", change);
 		let mut filename = String::from("color");
 		filename.extend(x.to_string().chars());
-		display(&centroids, filename);
+		// display(&centroids, filename);
 		x+=1;
 	}
 }
