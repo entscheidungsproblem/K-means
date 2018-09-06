@@ -39,7 +39,7 @@ fn get_point(points: Vec<u8>, index: u8) -> &[u8]{
 }
 */
 
-fn kmeansPP_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <CentroidPixel> {
+fn kmeans_pp_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <CentroidPixel> {
 
 	let mut centroids:VecDeque<CentroidPixel> = VecDeque::with_capacity(k as usize);
 	fn insert_centroid(cp: &ColorPixel, centroids:&mut VecDeque<CentroidPixel>) {
@@ -421,7 +421,7 @@ pub extern fn run() {
     //}
    
     //println!("------------------");
-    //let mut centroids2: VecDeque<CentroidPixel> = kmeansPP_init(8_u8, &pixels);
+    //let mut centroids2: VecDeque<CentroidPixel> = kmeans_pp_init(8_u8, &pixels);
     //println!("{}", centroids2.len());
     let mut centroids: VecDeque<CentroidPixel> = kmeans_init(14_u8, &pixels);
     let white = CentroidPixel {p:Pixel{base_colors:(100.0, 0.0, 270.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};

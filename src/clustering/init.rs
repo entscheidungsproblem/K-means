@@ -23,7 +23,7 @@ use rand::{Rng, thread_rng};
 
 
 
-pub fn kmeansPP_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <CentroidPixel> {
+pub fn kmeans_pp_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <CentroidPixel> {
 
 	let mut centroids:VecDeque<CentroidPixel> = VecDeque::with_capacity(k as usize);
 	fn insert_centroid(cp: &ColorPixel, centroids:&mut VecDeque<CentroidPixel>) {

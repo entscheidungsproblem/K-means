@@ -11,7 +11,7 @@ pub struct CentroidPixel{
 	pub count: u32,
 }
 
-pub struct k_means{
+pub struct KMeans{
 	pub pixels: VecDeque<ColorPixel>, 
 	pub centroids: VecDeque<CentroidPixel>,
 }

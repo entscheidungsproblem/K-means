@@ -1,22 +1,9 @@
-use clustering::distances::closest as closest;
-
-use data::Pixel as Pixel;
-use data::CentroidPixel as CentroidPixel;
-//use data::k_means as k_means;
-use data::ColorPixel as ColorPixel;
-
+use data::{Pixel, CentroidPixel, ColorPixel};
 use palette::{Lch,LabHue,IntoColor,Srgb,rgb};
-
-//use rayon::prelude::*;
-//use rayon::collections::hash_map;
-//use rayon::iter::Chunks;
+use image::{RgbImage, ImageBuffer, Rgb, ImageRgb8, PNG, open};
 use std::f32;
 use std::collections::{VecDeque, HashMap};
 use std::process;
-use image::{RgbImage, ImageBuffer, Rgb, ImageRgb8, PNG, open};
-//use rand::distributions::{IndependentSample, Range};
-//use rand::Rng;
-
 use std::fs::File;
 
 

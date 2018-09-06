@@ -1,27 +1,9 @@
 pub mod distances;
 pub mod init;
 use self::distances::closest as closest;
-
-use data::Pixel as Pixel;
-use data::CentroidPixel as CentroidPixel;
-//use data::k_means as k_means;
-use data::ColorPixel as ColorPixel;
-
-use images::display as display;
-
-use palette::{Lch,LabHue,IntoColor,Srgb};
-
-//use rayon::prelude::*;
-//use rayon::collections::hash_map;
-//use rayon::iter::Chunks;
+use data::{CentroidPixel, ColorPixel};
 use std::f32;
 use std::collections::VecDeque;
-//use std::process;
-//use image::RgbImage;
-//use rand::distributions::{IndependentSample, Range};
-//use rand::Rng;
-
-use std::fs::File;
 
 fn cluster (pixels: &VecDeque<ColorPixel>, centroids: & mut VecDeque<CentroidPixel>) {
 	//println!("-----Clustering-----");

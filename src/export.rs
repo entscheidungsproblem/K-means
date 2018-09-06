@@ -1,24 +1,16 @@
 #[cfg_attr(feature = "cargo-clippy", allow(needless_lifetimes))]
-#[macro_use]
-
-use data::Pixel as Pixel;
 use data::CentroidPixel as CentroidPixel;
-
-use clap::{Arg, App, SubCommand};
-
-use palette::{Lch,LabHue,IntoColor,Srgb,rgb};
-
-use std::f32;
+use palette::{Lch,LabHue,IntoColor,rgb};
 use std::collections::VecDeque;
-
 use std::fs::File;
-
 use std::io::Write;
-use std::io::BufWriter;
 
 fn export_file(contents: String, location: String){
-    let mut writer = File::create(location).unwrap();
-    writer.write_all(&contents.into_bytes() );
+    let mut writer = File::create(location.clone()).unwrap();
+    let success = writer.write_all(&contents.into_bytes() );
+    if success.is_err(){
+        eprintln!("Error writing: {}", location);
+    }
 }
 
 pub fn export_json(centroids: &VecDeque<CentroidPixel>, full_path: String, out_location: String){
@@ -31,7 +23,7 @@ pub fn export_json(centroids: &VecDeque<CentroidPixel>, full_path: String, out_l
         let lch: Lch = Lch::new(_lch.0, _lch.1, LabHue::from(_lch.2));
         let rgb_color: rgb::Rgb<rgb::Linear> = lch.into_rgb();
         //println!("{:?}", ((rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8));
-        if (i != 0){write!(&mut output, ",\n");}
+        if i != 0 {write!(&mut output, ",\n");}
         write!(&mut output, "\t\t\"color{}\":\t\"#{:0width$X}{:0width$X}{:0width$X}\"", i, (rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8, width=2);
         
         i+=1;

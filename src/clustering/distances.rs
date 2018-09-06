@@ -1,21 +1,7 @@
 use data::Pixel as Pixel;
 use data::CentroidPixel as CentroidPixel;
-//use data::k_means as k_means;
-use data::ColorPixel as ColorPixel;
-
-//use palette::{Lch,LabHue,IntoColor,Srgb};
-
-//use rayon::prelude::*;
-//use rayon::collections::hash_map;
-//use rayon::iter::Chunks;
 use std::f32;
 use std::collections::VecDeque;
-//use std::process;
-//use image::RgbImage;
-//use rand::distributions::{IndependentSample, Range};
-//use rand::Rng;
-//use std::fs::File;
-
 
 pub fn closest(p:&Pixel, points: &VecDeque<CentroidPixel>, dist_func: &str) -> (u8, f32) {
     let mut close_p: u8 = 0_u8;

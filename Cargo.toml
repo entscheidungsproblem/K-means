@@ -1,5 +1,5 @@
 [package]
-name = "K-means"
+name = "k-means"
 version = "0.1.0"
 authors = ["Patrick <entscheidungsproblem@protonmail.com>"]
 

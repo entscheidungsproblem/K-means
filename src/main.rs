@@ -13,55 +13,39 @@ pub mod export;
 
 use export::{export_json, export_yaml, export_sh, export_css};
 use clustering::cluster_all;
+use data::{CentroidPixel, ColorPixel};
+use images::load_image;
+use clustering::init::kmeans_init;
+use clap::App;
 
-use data::Pixel as Pixel;
-use data::CentroidPixel as CentroidPixel;
-//use data::k_means as k_means;
-use data::ColorPixel as ColorPixel;
-
-use images::load_image as load_image;
-
-use clustering::init::kmeans_init as kmeans_init;
-
-use clap::{Arg, App, SubCommand};
-
-
-use self::palette::{Lch,LabHue,IntoColor,Srgb,rgb};
-
-//use rayon::prelude::*;
-//use rayon::collections::hash_map;
-//use rayon::iter::Chunks;
-use std::f32;
-use std::collections::{VecDeque, HashMap};
-use std::process;
-use self::image::RgbImage;
-use self::rand::distributions::{IndependentSample, Range};
-use self::rand::Rng;
-
-use std::fs::File;
+use std::collections::VecDeque;
 
 use std::fs;
-use std::path::{PathBuf, Path};
+use std::path::PathBuf;
 
-
-fn main() {
-
-
-    let yaml = load_yaml!("cli.yml");
-    let matches = App::from_yaml(yaml).get_matches();
-
-    let _srcdir = fs::canonicalize(&PathBuf::from(matches.value_of("INPUT").unwrap()));
-
+fn check_path(path: &str) -> Option<String> {
+    let _srcdir = fs::canonicalize(&PathBuf::from(path));
     if _srcdir.is_err(){
-        println!("Path error!");
-        return;
+        eprintln!("Path error!");
+        return None;
     }
     let srcdir = _srcdir.unwrap();
     if !(srcdir.exists()){
-        println!("Path doesn't exist!");
-        return;
+        eprintln!("Path doesn't exist!");
+        return None;
     }
-    let full_path = String::from(srcdir.to_str().unwrap());
+    return Some(String::from(srcdir.to_str().unwrap()));
+}
+
+fn main() {
+    let yaml = load_yaml!("cli.yml");
+    let matches = App::from_yaml(yaml).get_matches();
+
+    let check: Option<String> = check_path(matches.value_of("INPUT").unwrap());
+    if check.is_none(){return}
+
+    let full_path: String = check.unwrap();
+
     //println!("Path does exist: {:?}", full_path);
     let pixels:VecDeque<ColorPixel> = load_image(full_path.clone());
     let mut centroids: VecDeque<CentroidPixel> = kmeans_init(7_u8, &pixels);
