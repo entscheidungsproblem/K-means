@@ -24,7 +24,7 @@ use clustering::init::kmeans_init as kmeans_init;
 use clap::{Arg, App, SubCommand};
 
 
-//use self::palette::{Lch,LabHue,IntoColor,Srgb};
+use self::palette::{Lch,LabHue,IntoColor,Srgb,rgb};
 
 //use rayon::prelude::*;
 //use rayon::collections::hash_map;
@@ -60,24 +60,34 @@ fn main() {
         return;
     }
     let full_path = String::from(srcdir.to_str().unwrap());
-    println!("Path does exist: {:?}", full_path);
-    let pixels:VecDeque<ColorPixel> = load_image(full_path);
-    println!("1!");
+    //println!("Path does exist: {:?}", full_path);
+    let pixels:VecDeque<ColorPixel> = load_image(full_path.clone());
     let mut centroids: VecDeque<CentroidPixel> = kmeans_init(7_u8, &pixels);
-    println!("2!");
     //let white = CentroidPixel {p:Pixel{base_colors:(100.0, 0.0, 270.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
     //let black = CentroidPixel {p:Pixel{base_colors:(0.0, 0.0, 0.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
     //centroids.insert(0, white);
     //centroids.insert(0, black);
     cluster_all(&pixels, &mut centroids, 50, 0.001);
-    println!("3!");
+    export_json(centroids, full_path);
+    
 
-    //for c in centroids{
-        //let rgb_color = lch_to_rgb(c.p.base_colors);
-        //let lch_color: Lch = Lch::new(c.p.base_colors.0, c.p.base_colors.1, Lch::from_degrees(c.p.base_colors.2));
-        //Pixel{base_colors:(lch_color.l, lch_color.chroma, lch_color.hue.to_degrees())};
-        //println!("{:?}, {:?}", c.p.base_colors, rgb_color);
-    //}
+    
+}
 
+fn export_json(centroids: VecDeque<CentroidPixel>, full_path: String){
+    print!("{{ \n\t\"wallpaper\":\t\"{}\",\n\t\"colors\":\t{{\n", full_path);
+    
+    let mut i = 0;
+    for c in centroids{
+        let _lch = c.p.base_colors;
+		let lch: Lch = Lch::new(_lch.0, _lch.1, LabHue::from(_lch.2));
+		let rgb_color: rgb::Rgb<rgb::Linear> = lch.into_rgb();
+        //println!("{:?}", ((rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8));
+        if (i != 0){println!(",");}
+        print!("\t\t\"color{}\":\t\"#{:0width$x}{:0width$x}{:0width$x}\"", i, (rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8, width=2);
+        
+        i+=1;
+    }
+    print!("\n\t}}\n}}");
     
 }

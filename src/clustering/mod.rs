@@ -24,7 +24,7 @@ use std::collections::VecDeque;
 use std::fs::File;
 
 fn cluster (pixels: &VecDeque<ColorPixel>, centroids: & mut VecDeque<CentroidPixel>) {
-	println!("-----Clustering-----");
+	//println!("-----Clustering-----");
 	for pixel in pixels.iter(){
     	let (i, _dist) = closest(&pixel.p, &centroids, "cie00");
 		let mut c = centroids.get_mut(i as usize).unwrap();
@@ -72,7 +72,7 @@ pub fn cluster_all (pixels: &VecDeque<ColorPixel>, centroids: & mut VecDeque<Cen
 	while x < rounds && change > delta{
     		cluster(pixels, centroids);
 		change = update(&mut distance, centroids);
-		println!("{}", change);
+		//println!("{}", change);
 		let mut filename = String::from("color");
 		filename.extend(x.to_string().chars());
 		// display(&centroids, filename);
