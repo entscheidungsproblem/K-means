@@ -65,23 +65,19 @@ pub fn load_image( name: String) -> VecDeque<ColorPixel>{
 	
 	let img1 = open(name).unwrap();
     	//if img1.is_err(){process::exit(1); }
-    	let img2:Option<&RgbImage> = img1.as_rgb8();
-    	if img2.is_none(){ process::exit(1); }
-    	let img3 = img2.unwrap();
+	let img2:Option<&RgbImage> = img1.as_rgb8();
+	if img2.is_none(){ process::exit(1); }
+	let img3 = img2.unwrap();
 
-    	let num_pixels: usize = (img3.height() * img3.width()) as usize;
+	let num_pixels: usize = (img3.height() * img3.width()) as usize;
 
-    	let mut rgb_pixels: HashMap<(u8,u8,u8), u32> = HashMap::with_capacity(num_pixels);
-    	for _pixel in img3.chunks(3){
-    	  let _rgb = (_pixel[0], _pixel[1], _pixel[2]);
-	      if !rgb_pixels.contains_key(&_rgb){
-		        rgb_pixels.insert(_rgb,1);
-	      }
-	      else{
-	      	let count = rgb_pixels.get_mut(&_rgb).unwrap();
-			*count += 1;
-	      }
-    }
+	let mut rgb_pixels: HashMap<(u8,u8,u8), u32> = HashMap::with_capacity(num_pixels);
+	for _pixel in img3.chunks(3){
+		let _rgb = (_pixel[0], _pixel[1], _pixel[2]);
+		rgb_pixels.entry(_rgb).or_insert(0);
+		let count = rgb_pixels.get_mut(&_rgb).unwrap();
+		*count += 1;
+	}
 
     let mut pixels: VecDeque<ColorPixel> = VecDeque::with_capacity(num_pixels);
     for (_pixel, count) in &rgb_pixels {

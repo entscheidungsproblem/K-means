@@ -6,7 +6,6 @@ use std::collections::VecDeque;
 pub fn closest(p:&Pixel, points: &VecDeque<CentroidPixel>, dist_func: &str) -> (u8, f32) {
     let mut close_p: u8 = 0_u8;
     let mut close_dist = f32::MAX;
-    //let mut counter = 0_u8;
     for (counter, next_p) in points.iter().enumerate(){
 		let temp_dist: f32 = match dist_func {
 			"euclidean" => euclidean_distance(p, &next_p.p),
@@ -16,7 +15,6 @@ pub fn closest(p:&Pixel, points: &VecDeque<CentroidPixel>, dist_func: &str) -> (
 			_ => -1f32,
 		};
 
-		//let temp_dist = cie00_distance(&p.p, &next_p.p);
         if close_dist > temp_dist {
             close_p = counter as u8;
             close_dist = temp_dist;

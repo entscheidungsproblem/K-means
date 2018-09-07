@@ -1,27 +1,9 @@
-pub use clustering::distances::closest as closest;
-
-
-use data::Pixel as Pixel;
-use data::CentroidPixel as CentroidPixel;
-//use data::k_means as k_means;
-use data::ColorPixel as ColorPixel;
-
-//use palette::{Lch,LabHue,IntoColor,Srgb};
-
-//use rayon::prelude::*;
-//use rayon::collections::hash_map;
-//use rayon::iter::Chunks;
-use std::f32;
-use std::collections::VecDeque;
-//use std::process;
-//use image::RgbImage;
+pub use clustering::distances::closest;
+use data::{Pixel, CentroidPixel, ColorPixel};
 use rand::distributions::{IndependentSample, Range};
 use rand::{Rng, thread_rng};
-
-//use std::fs::File;
-
-
-
+use std::f32;
+use std::collections::VecDeque;
 
 pub fn kmeans_pp_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <CentroidPixel> {
 

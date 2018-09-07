@@ -39,13 +39,9 @@ fn check_path(path: &str) -> Option<String> {
 fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
-
     let check: Option<String> = check_path(matches.value_of("INPUT").unwrap());
     if check.is_none(){return}
-
     let full_path: String = check.unwrap();
-
-    //println!("Path does exist: {:?}", full_path);
     let pixels:VecDeque<ColorPixel> = load_image(full_path.clone());
     let mut centroids: VecDeque<CentroidPixel> = kmeans_init(7_u8, &pixels);
     //let white = CentroidPixel {p:Pixel{base_colors:(100.0, 0.0, 270.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
@@ -53,7 +49,6 @@ fn main() {
     //centroids.insert(0, white);
     //centroids.insert(0, black);
     cluster_all(&pixels, &mut centroids, 50, 0.01);
-
     if matches.is_present("json")   { export_json(&centroids, &full_path, "colors.json"); }
     if matches.is_present("yaml")   { export_yaml(&centroids, &full_path, "colors.yml"); }
     if matches.is_present("sh")     { export_sh(&centroids, &full_path, "colors.sh"); }

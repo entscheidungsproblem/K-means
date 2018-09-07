@@ -18,8 +18,6 @@ pub struct KMeans{
 
 pub struct ColorPixel {
     pub p: Pixel,
-    //dist: f32,
-    //centroid: u32,
     pub count: u32,
 }
 

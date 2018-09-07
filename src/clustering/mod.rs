@@ -6,7 +6,6 @@ use std::f32;
 use std::collections::VecDeque;
 
 fn cluster (pixels: &VecDeque<ColorPixel>, centroids: & mut VecDeque<CentroidPixel>) {
-	//println!("-----Clustering-----");
 	for pixel in pixels.iter(){
     	let (i, _dist) = closest(&pixel.p, &centroids, "cie00");
 		let mut c = centroids.get_mut(i as usize).unwrap();
@@ -20,7 +19,6 @@ fn cluster (pixels: &VecDeque<ColorPixel>, centroids: & mut VecDeque<CentroidPix
 
     for c in centroids{
 		if c.count > 0 {
-			//println!("{}, {}, {}", c.sum.0/c.count as f32, c.sum.1/c.count as f32, c.sum.2/c.count as f32);
 			c.p.base_colors = (c.sum.0/c.count as f32, c.sum.1/c.count as f32, c.sum.2/c.count as f32);
 			c.sum = (0_f32, 0_f32, 0_f32);
 			c.count = 0_u32;

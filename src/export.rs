@@ -20,7 +20,6 @@ pub fn export_json(centroids: &VecDeque<CentroidPixel>, full_path: &str, out_loc
         let _lch = centroid.p.base_colors;
         let lch: Lch = Lch::new(_lch.0, _lch.1, LabHue::from(_lch.2));
         let rgb_color: rgb::Rgb<rgb::Linear> = lch.into_rgb();
-        //println!("{:?}", ((rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8));
         if counter != 0 {writeln!(&mut output, ",");}
         write!(&mut output, "\t\t\"color{}\":\t\"#{:0width$X}{:0width$X}{:0width$X}\"", counter, (rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8, width=2);
     }
@@ -37,7 +36,6 @@ pub fn export_yaml(centroids: &VecDeque<CentroidPixel>, full_path: &str, out_loc
         let _lch = c.p.base_colors;
         let lch: Lch = Lch::new(_lch.0, _lch.1, LabHue::from(_lch.2));
         let rgb_color: rgb::Rgb<rgb::Linear> = lch.into_rgb();
-        //println!("{:?}", ((rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8));
         writeln!(&mut output, "\tcolor{}: \"#{:0width$X}{:0width$X}{:0width$X}\"", i, (rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8, width=2);
     }   
     export_file(String::from_utf8(output).unwrap(), out_location);
@@ -51,7 +49,6 @@ pub fn export_sh(centroids: &VecDeque<CentroidPixel>, full_path: &str, out_locat
         let _lch = c.p.base_colors;
         let lch: Lch = Lch::new(_lch.0, _lch.1, LabHue::from(_lch.2));
         let rgb_color: rgb::Rgb<rgb::Linear> = lch.into_rgb();
-        //println!("{:?}", ((rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8));
         writeln!(&mut output, "color{}=\'#{:0width$X}{:0width$X}{:0width$X}\'", i, (rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8, width=2);
     }   
     export_file(String::from_utf8(output).unwrap(), out_location);
@@ -66,7 +63,6 @@ pub fn export_css(centroids: &VecDeque<CentroidPixel>, full_path: &str, out_loca
         let _lch = c.p.base_colors;
         let lch: Lch = Lch::new(_lch.0, _lch.1, LabHue::from(_lch.2));
         let rgb_color: rgb::Rgb<rgb::Linear> = lch.into_rgb();
-        //println!("{:?}", ((rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8));
         writeln!(&mut output, "\t--color{}: #{:0width$X}{:0width$X}{:0width$X};", i, (rgb_color.red * 255.0) as u8, (rgb_color.green * 255.0) as u8, (rgb_color.blue * 255.0) as u8, width=2);
     }
     writeln!(&mut output, "}}");
