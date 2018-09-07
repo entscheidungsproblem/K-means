@@ -1,6 +1,7 @@
 use data::{CentroidPixel, Pixel};
 use std::collections::VecDeque;
 use std::f32;
+use std::f32::consts;
 
 pub fn closest(p: &Pixel, points: &VecDeque<CentroidPixel>, dist_func: &str) -> (u8, f32) {
 	let mut close_p: u8 = 0_u8;
@@ -22,12 +23,21 @@ pub fn closest(p: &Pixel, points: &VecDeque<CentroidPixel>, dist_func: &str) -> 
 }
 
 fn euclidean_distance(p1: &Pixel, p2: &Pixel) -> f32 {
-	let mut s: f32 = 0.0_f32;
+	let mut s: f32 = 0.0;
 	s += (p1.base_colors.0 - p2.base_colors.0).powi(2);
 	s += (p1.base_colors.1 - p2.base_colors.1).powi(2);
 	s += (p1.base_colors.2 - p2.base_colors.2).powi(2);
 	s = s.sqrt();
 	s
+}
+
+fn div (num: f32, den: f32) -> f32 {
+	if num == 0.0 && den == 0.0 {
+		1_f32
+	}
+	else{
+		num / den
+	}
 }
 
 fn cie00_distance(p1: &Pixel, p2: &Pixel) -> f32 {
@@ -43,6 +53,7 @@ fn cie00_distance(p1: &Pixel, p2: &Pixel) -> f32 {
 	let l_bar_prime = (l1 + l2) / 2.0;
 	let c1 = (a1.powi(2) + b1.powi(2)).sqrt();
 	let c2 = (a2.powi(2) + b2.powi(2)).sqrt();
+	
 	let c_bar = (c1 + c2) / 2.0;
 	let g = (1.0 - (c_bar.powi(7) / (c_bar.powi(7) + twenth_five_pow7)).sqrt()) / 2.0;
 	let a1_prime = a1 * (1.0 + g);
@@ -51,11 +62,11 @@ fn cie00_distance(p1: &Pixel, p2: &Pixel) -> f32 {
 	let c2_prime = (a2_prime.powi(2) + b2.powi(2)).sqrt();
 	let c_bar_prime = (c1_prime + c2_prime) / 2.0;
 
-	let mut h1_prime = (b1 / a1_prime).atan();
+	let mut h1_prime = div(b1, a1_prime).atan();
 	if h1_prime < 0.0 {
 		h1_prime += 360.0;
 	}
-	let mut h2_prime = (b2 / a2_prime).atan();
+	let mut h2_prime = div(b2, a2_prime).atan();
 	if h2_prime < 0.0 {
 		h2_prime += 360.0;
 	}
@@ -128,8 +139,46 @@ fn cie94_distance(p1: &Pixel, p2: &Pixel) -> f32 {
 fn contrast_ratio(p1: &Pixel, p2: &Pixel) -> f32 {
 	let l1 = p1.base_colors.2;
 	let l2 = p2.base_colors.2;
+	let mut num = 0.05;
+	let mut den = 0.05;
 	if l1 > l2 {
-		return (l1 + 0.05) / (l2 + 0.05);
+		num += l1;
+		den += l2;
+	} else {
+		num += l2;
+		den += l1;
 	}
-	return (l2 + 0.05) / (l1 + 0.05);
+	num / den
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+	#[test]
+    fn test_euclidean_distance() {
+		let p1: Pixel = Pixel {base_colors: (0_f32, 0_f32, 0_f32)};
+		let p2: Pixel = Pixel {base_colors: (0_f32, 0_f32, 0_f32)};
+
+        assert_eq!(0_f32, euclidean_distance(&p1, &p2));
+    }
+
+	#[test]
+    fn test_cie00_distance() {
+		let p1: Pixel = Pixel {base_colors: (0_f32, 0_f32, 0_f32)};
+		let p2: Pixel = Pixel {base_colors: (0_f32, 0_f32, 0_f32)};
+
+		let x = cie00_distance(&p1, &p2);
+        assert_eq!(0_f32, x);
+    }
+
+
+	#[test]
+    fn test_cie94_distance() {
+		let p1: Pixel = Pixel {base_colors: (0_f32, 0_f32, 0_f32)};
+		let p2: Pixel = Pixel {base_colors: (0_f32, 0_f32, 0_f32)};
+
+        assert_eq!(0_f32, cie94_distance(&p1, &p2));
+    }
 }

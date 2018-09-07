@@ -4,6 +4,15 @@ use std::collections::VecDeque;
 use std::fs::File;
 use std::io::Write;
 
+fn hex(rgb_color: rgb::Rgb<rgb::Linear>) -> String {
+	format!("#{:0width$X}{:0width$X}{:0width$X}",
+		(rgb_color.red * 255.0) as u8,
+		(rgb_color.green * 255.0) as u8,
+		(rgb_color.blue * 255.0) as u8,
+		width = 2
+	)
+}
+
 fn export_file(contents: String, location: &str) {
 	let mut writer = File::create(location).unwrap();
 	let success = writer.write_all(&contents.into_bytes());
@@ -29,12 +38,8 @@ pub fn export_json(centroids: &VecDeque<CentroidPixel>, full_path: &str, out_loc
 		}
 		write!(
 			&mut output,
-			"\t\t\"color{}\":\t\"#{:0width$X}{:0width$X}{:0width$X}\"",
-			counter,
-			(rgb_color.red * 255.0) as u8,
-			(rgb_color.green * 255.0) as u8,
-			(rgb_color.blue * 255.0) as u8,
-			width = 2
+			"\t\t\"color{}\":\t\"{}\"",
+			counter, hex(rgb_color)
 		);
 	}
 	write!(&mut output, "\n\t}}\n}}");
@@ -52,12 +57,8 @@ pub fn export_yaml(centroids: &VecDeque<CentroidPixel>, full_path: &str, out_loc
 		let rgb_color: rgb::Rgb<rgb::Linear> = lch.into_rgb();
 		writeln!(
 			&mut output,
-			"\tcolor{}: \"#{:0width$X}{:0width$X}{:0width$X}\"",
-			i,
-			(rgb_color.red * 255.0) as u8,
-			(rgb_color.green * 255.0) as u8,
-			(rgb_color.blue * 255.0) as u8,
-			width = 2
+			"\tcolor{}: \"{}\"",
+			i, hex(rgb_color)
 		);
 	}
 	export_file(String::from_utf8(output).unwrap(), out_location);
@@ -73,12 +74,8 @@ pub fn export_sh(centroids: &VecDeque<CentroidPixel>, full_path: &str, out_locat
 		let rgb_color: rgb::Rgb<rgb::Linear> = lch.into_rgb();
 		writeln!(
 			&mut output,
-			"color{}=\'#{:0width$X}{:0width$X}{:0width$X}\'",
-			i,
-			(rgb_color.red * 255.0) as u8,
-			(rgb_color.green * 255.0) as u8,
-			(rgb_color.blue * 255.0) as u8,
-			width = 2
+			"color{}=\'{}\'",
+			i, hex(rgb_color)
 		);
 	}
 	export_file(String::from_utf8(output).unwrap(), out_location);
@@ -95,14 +92,24 @@ pub fn export_css(centroids: &VecDeque<CentroidPixel>, full_path: &str, out_loca
 		let rgb_color: rgb::Rgb<rgb::Linear> = lch.into_rgb();
 		writeln!(
 			&mut output,
-			"\t--color{}: #{:0width$X}{:0width$X}{:0width$X};",
-			i,
-			(rgb_color.red * 255.0) as u8,
-			(rgb_color.green * 255.0) as u8,
-			(rgb_color.blue * 255.0) as u8,
-			width = 2
+			"\t--color{}: {};",
+			i, hex(rgb_color)
 		);
 	}
 	writeln!(&mut output, "}}");
 	export_file(String::from_utf8(output).unwrap(), out_location);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+	#[test]
+    fn test_hex() {
+		let lch: Lch = Lch::new(0.0, 0.0, LabHue::from(0.0));
+		let rgb_color: rgb::Rgb<rgb::Linear> = lch.into_rgb();
+
+		println!("hex = {:?}", rgb_color);
+        assert_eq!("#000000", hex(rgb_color));
+    }
 }
