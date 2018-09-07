@@ -1,4 +1,3 @@
-#[cfg_attr(feature = "cargo-clippy", allow(needless_lifetimes))]
 #[macro_use]
 extern crate clap;
 extern crate image;
@@ -34,7 +33,7 @@ fn check_path(path: &str) -> Option<String> {
         eprintln!("Path doesn't exist!");
         return None;
     }
-    return Some(String::from(srcdir.to_str().unwrap()));
+    Some(String::from(srcdir.to_str().unwrap()))
 }
 
 fn main() {
@@ -55,8 +54,8 @@ fn main() {
     //centroids.insert(0, black);
     cluster_all(&pixels, &mut centroids, 50, 0.01);
 
-    if matches.is_present("json")   { export_json(&centroids, full_path.clone(), "colors.json".to_string()); }
-    if matches.is_present("yaml")   { export_yaml(&centroids, full_path.clone(), "colors.yml".to_string()); }
-    if matches.is_present("sh")     { export_sh(&centroids, full_path.clone(), "colors.sh".to_string()); }
-    if matches.is_present("css")    { export_css(&centroids, full_path.clone(), "colors.css".to_string()); }
+    if matches.is_present("json")   { export_json(&centroids, &full_path, "colors.json"); }
+    if matches.is_present("yaml")   { export_yaml(&centroids, &full_path, "colors.yml"); }
+    if matches.is_present("sh")     { export_sh(&centroids, &full_path, "colors.sh"); }
+    if matches.is_present("css")    { export_css(&centroids, &full_path, "colors.css"); }
 }

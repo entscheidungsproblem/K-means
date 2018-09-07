@@ -6,8 +6,8 @@ use std::collections::VecDeque;
 pub fn closest(p:&Pixel, points: &VecDeque<CentroidPixel>, dist_func: &str) -> (u8, f32) {
     let mut close_p: u8 = 0_u8;
     let mut close_dist = f32::MAX;
-    let mut counter = 0_u8;
-    for next_p in points{
+    //let mut counter = 0_u8;
+    for (counter, next_p) in points.iter().enumerate(){
 		let temp_dist: f32 = match dist_func {
 			"euclidean" => euclidean_distance(p, &next_p.p),
 			"cie00" => cie00_distance(p, &next_p.p),
@@ -18,12 +18,11 @@ pub fn closest(p:&Pixel, points: &VecDeque<CentroidPixel>, dist_func: &str) -> (
 
 		//let temp_dist = cie00_distance(&p.p, &next_p.p);
         if close_dist > temp_dist {
-            close_p = counter;
+            close_p = counter as u8;
             close_dist = temp_dist;
         }
-	counter += 1;
     }
-    return (close_p, close_dist);
+    (close_p, close_dist)
 }
 
 fn euclidean_distance (p1: &Pixel, p2: &Pixel) -> f32 {
@@ -32,11 +31,11 @@ fn euclidean_distance (p1: &Pixel, p2: &Pixel) -> f32 {
     s += (p1.base_colors.1 - p2.base_colors.1).powi(2);
     s += (p1.base_colors.2 - p2.base_colors.2).powi(2);
     s = s.sqrt();
-    return s;
+    s
 }
 
 fn cie00_distance (p1: &Pixel, p2: &Pixel) -> f32 {
-	let twenth_five_pow7 = 6103515625.0;
+	let twenth_five_pow7 = 6_103_515_625.0;
 	let l2 = p2.base_colors.0;
 	let a2 = p2.base_colors.1;
 	let b2 = p2.base_colors.2;
@@ -99,7 +98,7 @@ fn cie00_distance (p1: &Pixel, p2: &Pixel) -> f32 {
 	let rc = 2.0*(c_bar_prime.powi(7)/(c_bar_prime.powi(7) + twenth_five_pow7)).sqrt();
 	let rt = -rc*(2.0*delta_degrees).sin();
 
-	return ( (delta_l/(kl*sl)).powi(2) + (delta_c_prime/(kc*sc)).powi(2) +  (delta_h_prime/(kh*sh)).powi(2) + rt*(delta_c_prime/(kc*sc))*(delta_h_prime/(kh*sh)) ).sqrt();
+	( (delta_l/(kl*sl)).powi(2) + (delta_c_prime/(kc*sc)).powi(2) +  (delta_h_prime/(kh*sh)).powi(2) + rt*(delta_c_prime/(kc*sc))*(delta_h_prime/(kh*sh)) ).sqrt()
 }
 
 fn cie94_distance (p1: &Pixel, p2: &Pixel) -> f32 {
@@ -119,7 +118,7 @@ fn cie94_distance (p1: &Pixel, p2: &Pixel) -> f32 {
 	let sc = 1_f32 + k1*c1;
 	let sh = 1_f32 + k2*c1;
 
-	return ( (delta_l/(kl*sl).powi(2)) + (delta_c/(kc*sc).powi(2)) +  delta_h/((kh*sh).powi(2))  ).sqrt();
+	( (delta_l/(kl*sl).powi(2)) + (delta_c/(kc*sc).powi(2)) +  delta_h/((kh*sh).powi(2))  ).sqrt()
 }
 
 fn contrast_ratio (p1:&Pixel, p2:&Pixel) -> f32 {
@@ -128,5 +127,5 @@ fn contrast_ratio (p1:&Pixel, p2:&Pixel) -> f32 {
 	if l1 > l2{
 		return (l1 + 0.05)/(l2 + 0.05);
 	}
-	return (l2 + 0.05)/(l1 + 0.05);
+	(l2 + 0.05)/(l1 + 0.05)
 }

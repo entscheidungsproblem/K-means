@@ -16,18 +16,18 @@ fn cluster (pixels: &VecDeque<ColorPixel>, centroids: & mut VecDeque<CentroidPix
 		c.sum.1 += pixel.p.base_colors.1 * num as f32;
 		c.sum.2 += pixel.p.base_colors.2 * num as f32;
 		c.count += num;
-    	}
+	}
 
     for c in centroids{
-	if c.count > 0 {
-		//println!("{}, {}, {}", c.sum.0/c.count as f32, c.sum.1/c.count as f32, c.sum.2/c.count as f32);
-		c.p.base_colors = (c.sum.0/c.count as f32, c.sum.1/c.count as f32, c.sum.2/c.count as f32);
-		c.sum = (0_f32, 0_f32, 0_f32);
-		c.count = 0_u32;
-	}
-	else{
-		println!("Centroid Error. Count = {}", c.count);
-	}
+		if c.count > 0 {
+			//println!("{}, {}, {}", c.sum.0/c.count as f32, c.sum.1/c.count as f32, c.sum.2/c.count as f32);
+			c.p.base_colors = (c.sum.0/c.count as f32, c.sum.1/c.count as f32, c.sum.2/c.count as f32);
+			c.sum = (0_f32, 0_f32, 0_f32);
+			c.count = 0_u32;
+		}
+		else{
+			println!("Centroid Error. Count = {}", c.count);
+		}
     }
 }
 
@@ -39,7 +39,7 @@ pub fn cluster_all (pixels: &VecDeque<ColorPixel>, centroids: & mut VecDeque<Cen
 			_delta += ((val - distance[x])/distance[x]).abs();
 			distance[x] = val;
 		}
-		return _delta/centroids.len() as f32;	
+		_delta/centroids.len() as f32
 	}
 	
 	// display(&centroids, String::from("color"));

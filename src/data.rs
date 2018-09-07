@@ -30,7 +30,7 @@ trait Get {
 
 impl Get for CentroidPixel {
     fn get_pixel(&mut self) -> &Pixel{
-        return &self.p;
+        &self.p
     }
 }
 

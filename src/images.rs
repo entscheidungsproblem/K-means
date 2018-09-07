@@ -8,7 +8,7 @@ use std::fs::File;
 
 
 
-pub fn display(centroids:&VecDeque<CentroidPixel>, name:String) {
+pub fn display(centroids:&VecDeque<CentroidPixel>, name: &str) {
 	let k = centroids.len();
 	let imgx = k*100;
 	let imgy = 400;
@@ -33,12 +33,12 @@ pub fn display(centroids:&VecDeque<CentroidPixel>, name:String) {
 		//println!("{},{},{}", rgb.red,rgb.green,rgb.blue);
 	}
 	let mut filename = String::from("data/");
-	filename.extend(name.chars());
-	filename.extend(".png".chars());
+	filename.push_str(&name);
+	filename.push_str(".png");
 	let fout = &mut File::create(filename).unwrap();
 
 	// We must indicate the image's color type and what format to save as
-	ImageRgb8(imgbuf).save(fout, PNG).unwrap();
+	ImageRgb8(imgbuf).save(fout, PNG).unwrap()
 }
 
 /*
@@ -78,23 +78,18 @@ pub fn load_image( name: String) -> VecDeque<ColorPixel>{
 		        rgb_pixels.insert(_rgb,1);
 	      }
 	      else{
-	      		let count = rgb_pixels.get_mut(&_rgb).unwrap();
+	      	let count = rgb_pixels.get_mut(&_rgb).unwrap();
 			*count += 1;
-			//rgb_pixels.remove(_rgb);
-		        //rgb_pixels.insert(_rgb, count);
 	      }
     }
 
     let mut pixels: VecDeque<ColorPixel> = VecDeque::with_capacity(num_pixels);
-    for (_pixel, count) in rgb_pixels.iter() {
-    	  let lch_color: Lch = Srgb::new((_pixel.0 as f32)/(256 as f32), (_pixel.1 as f32)/(256 as f32), (_pixel.2 as f32)/(256 as f32)).into();
-    	  //let rgb  = Rgb::new_u8(_pixel[0], _pixel[1],  _pixel[2]);
-	      //println!("{}", rgb);
-	      //let lch = Srgb.into_linear().into_lab();
-	      //println!("l: {}, c:{}, h:{}", lch_color.l, lch_color.chroma, lch_color.hue.to_degrees());
+    for (_pixel, count) in &rgb_pixels {
+    	  let lch_color: Lch = Srgb::new(	f32::from(_pixel.0)/(256_f32), 
+		  									f32::from(_pixel.1)/(256_f32),
+											f32::from(_pixel.2)/(256_f32)).into();
         let p = Pixel{base_colors:(lch_color.l, lch_color.chroma, lch_color.hue.to_degrees())};
-	      pixels.insert(0, ColorPixel{p:p, count:*count});
+	      pixels.insert(0, ColorPixel{p, count:*count});
     }
-    //println!("{}", pixels);
-    return pixels;
+    pixels
 }

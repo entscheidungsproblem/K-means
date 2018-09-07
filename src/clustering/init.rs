@@ -40,25 +40,24 @@ pub fn kmeans_pp_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <Centroid
     for _x in 1..k{
     	let mut distances: VecDeque<f32> = VecDeque::with_capacity(k as usize);
     	let mut sum = 0_f32;
-    	for p in 0..pixels.len(){
-		let close = closest(&pixels[p].p, &centroids, "cie00").1;
-		let square = close.powi(2);
-		distances.insert(p, square);
-		//let &mut d = distances.get_mut(p).unwrap();
-		sum += square;
-	}
-	
-	sum *= rng.next_f32();
-	for p in 0..pixels.len(){
-		sum -= distances.get(p).unwrap();
-		if sum < 0_f32{
-			insert_centroid(&pixels[p], &mut centroids);
-			break;
+    	for (p, _) in pixels.iter().enumerate(){
+			let close = closest(&pixels[p].p, &centroids, "cie00").1;
+			let square = close.powi(2);
+			distances.insert(p, square);
+			//let &mut d = distances.get_mut(p).unwrap();
+			sum += square;
 		}
-	}
-
+		
+		sum *= rng.next_f32();
+		for (p, _) in pixels.iter().enumerate(){
+			sum -= &distances[p];
+			if sum < 0_f32{
+				insert_centroid(&pixels[p], &mut centroids);
+				break;
+			}
+		}
     }
-    return centroids;
+    centroids
 }
 
 pub fn kmeans_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <CentroidPixel> {
@@ -67,9 +66,8 @@ pub fn kmeans_init(k: u8, pixels:&VecDeque<ColorPixel>) -> VecDeque <CentroidPix
     let mut centroid:VecDeque<CentroidPixel> = VecDeque::with_capacity(k as usize);
     for _x in 0..k{
     	let i = r.ind_sample(&mut rng); 
-	let p = pixels.get(i).unwrap();
-
-	centroid.insert(0, CentroidPixel{p:Pixel{base_colors:p.p.base_colors}, sum:(0_f32, 0_f32, 0_f32), count:0_u32} );
+		let p = pixels.get(i).unwrap();
+		centroid.insert(0, CentroidPixel{p:Pixel{base_colors:p.p.base_colors}, sum:(0_f32, 0_f32, 0_f32), count:0_u32} );
     }
-    return centroid;
+    centroid
 }
