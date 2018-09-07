@@ -129,7 +129,7 @@ fn contrast_ratio(p1: &Pixel, p2: &Pixel) -> f32 {
 	let l1 = p1.base_colors.2;
 	let l2 = p2.base_colors.2;
 	if l1 > l2 {
-		(l1 + 0.05) / (l2 + 0.05)
+		return (l1 + 0.05) / (l2 + 0.05);
 	}
-	(l2 + 0.05) / (l1 + 0.05)
+	return (l2 + 0.05) / (l1 + 0.05);
 }
