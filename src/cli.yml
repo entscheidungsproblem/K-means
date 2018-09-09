@@ -9,7 +9,6 @@ args:
         index: 1
     - json:
         short: j
-        global: true
         help: Saves json data
     - yaml:
         short: y
@@ -20,3 +19,20 @@ args:
     - css:
         short: c
         help: Saves css data
+
+subcommands:
+    - print:
+        about: Prints output to files
+        args:
+            - json:
+                short: j
+                help: Prints json data
+            - yaml:
+                short: y
+                help: Prints yaml data
+            - sh:
+                short: s
+                help: Prints sh data
+            - css:
+                short: c
+                help: Prints css data

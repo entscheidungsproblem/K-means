@@ -1,7 +1,6 @@
 use data::{CentroidPixel, Pixel};
 use std::collections::VecDeque;
 use std::f32;
-use std::f32::consts;
 
 pub fn closest(p: &Pixel, points: &VecDeque<CentroidPixel>, dist_func: &str) -> (u8, f32) {
 	let mut close_p: u8 = 0_u8;

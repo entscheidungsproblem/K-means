@@ -14,7 +14,7 @@ use clap::App;
 use clustering::cluster_all;
 use clustering::init::kmeans_init;
 use data::{CentroidPixel, ColorPixel};
-use export::{export_css, export_json, export_sh, export_yaml};
+use export::{print_css, print_json, print_sh, print_yaml, export_css, export_json, export_sh, export_yaml};
 use images::load_image;
 
 use std::collections::VecDeque;
@@ -50,16 +50,33 @@ fn main() {
 	//centroids.insert(0, white);
 	//centroids.insert(0, black);
 	cluster_all(&pixels, &mut centroids, 50, 0.01);
-	if matches.is_present("json") {
-		export_json(&centroids, &full_path, "colors.json");
+	
+	if let Some(print_matches) = matches.subcommand_matches("print") {
+		if print_matches.is_present("json") {
+			print_json(&centroids, &full_path);
+		} else if print_matches.is_present("yaml"){
+			print_yaml(&centroids, &full_path);
+		} else if print_matches.is_present("sh"){
+			print_sh(&centroids, &full_path);
+		} else if print_matches.is_present("css"){
+			print_css(&centroids, &full_path);
+		} else {
+			println!("print needs an argument: (j)son, (y)aml, (c)ss, (s)h");
+		}
+
 	}
-	if matches.is_present("yaml") {
-		export_yaml(&centroids, &full_path, "colors.yml");
-	}
-	if matches.is_present("sh") {
-		export_sh(&centroids, &full_path, "colors.sh");
-	}
-	if matches.is_present("css") {
-		export_css(&centroids, &full_path, "colors.css");
-	}
+	else{
+		if matches.is_present("json") {
+			export_json(&centroids, &full_path, "colors.json");
+		}
+		if matches.is_present("yaml") {
+			export_yaml(&centroids, &full_path, "colors.yml");
+		}
+		if matches.is_present("sh") {
+			export_sh(&centroids, &full_path, "colors.sh");
+		}
+		if matches.is_present("css") {
+			export_css(&centroids, &full_path, "colors.css");
+		}
+	}	
 }
