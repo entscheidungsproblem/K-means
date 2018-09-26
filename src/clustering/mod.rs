@@ -1,31 +1,20 @@
 pub mod distances;
 pub mod init;
 use self::distances::closest;
-use data::{CentroidPixel, ColorPixel};
+use data::{Centroid, Pixel};
 use std::collections::VecDeque;
 use std::f32;
 
-fn cluster(pixels: &VecDeque<ColorPixel>, centroids: &mut VecDeque<CentroidPixel>) {
-	for pixel in pixels.iter() {
-		let (i, _dist) = closest(&pixel.p, &centroids, "cie00");
+fn cluster(pixels: &VecDeque<Pixel>, centroids: &mut VecDeque<Centroid>) {
+	for (index, pixel) in pixels.iter().enumerate() {
+		let (i, _dist) = closest(&pixel, &centroids, "cie00");
 		let mut c = centroids.get_mut(i as usize).unwrap();
-		let num = pixel.count;
-
-		c.sum.0 += pixel.p.base_colors.0 * num as f32;
-		c.sum.1 += pixel.p.base_colors.1 * num as f32;
-		c.sum.2 += pixel.p.base_colors.2 * num as f32;
-		c.count += num;
+		c.add(index as u32, &pixel);
 	}
 
 	for c in centroids {
 		if c.count > 0 {
-			c.p.base_colors = (
-				c.sum.0 / c.count as f32,
-				c.sum.1 / c.count as f32,
-				c.sum.2 / c.count as f32,
-			);
-			c.sum = (0_f32, 0_f32, 0_f32);
-			c.count = 0_u32;
+			c.next();
 		} else {
 			println!("Centroid Error. Count = {}", c.count);
 		}
@@ -33,17 +22,17 @@ fn cluster(pixels: &VecDeque<ColorPixel>, centroids: &mut VecDeque<CentroidPixel
 }
 
 pub fn cluster_all(
-	pixels: &VecDeque<ColorPixel>,
-	centroids: &mut VecDeque<CentroidPixel>,
+	pixels: &VecDeque<Pixel>,
+	centroids: &mut VecDeque<Centroid>,
 	rounds: usize,
 	delta: f32,
 ) {
-	fn update(distance: &mut VecDeque<f32>, centroids: &VecDeque<CentroidPixel>) -> f32 {
+	fn update(distance: &mut VecDeque<f32>, centroids: &VecDeque<Centroid>) -> f32 {
 		let mut _delta = 0.0;
 		for x in 0..centroids.len() {
-			let val = (centroids[x].p.base_colors.0.powi(2)
-				+ centroids[x].p.base_colors.1.powi(2)
-				+ centroids[x].p.base_colors.2.powi(2)).sqrt();
+			let val = (centroids[x].location.l.powi(2)
+				+ centroids[x].location.c.powi(2)
+				+ centroids[x].location.h.powi(2)).sqrt();
 			_delta += ((val - distance[x]) / distance[x]).abs();
 			distance[x] = val;
 		}
@@ -53,9 +42,7 @@ pub fn cluster_all(
 	// display(&centroids, String::from("color"));
 	let mut distance: VecDeque<f32> = VecDeque::with_capacity(centroids.len());
 	for c in centroids.iter() {
-		let val = (c.p.base_colors.0.powi(2)
-			+ c.p.base_colors.1.powi(2)
-			+ c.p.base_colors.2.powi(2)).sqrt();
+		let val = (c.location.l.powi(2) + c.location.c.powi(2) + c.location.h.powi(2)).sqrt();
 		distance.push_back(val);
 	}
 	cluster(pixels, centroids);

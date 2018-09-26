@@ -1,4 +1,4 @@
-use data::{CentroidPixel, ColorPixel, Pixel};
+use data::{Centroid, Pixel};
 use image::{open, ImageBuffer, ImageRgb8, Rgb, RgbImage, PNG};
 use palette::{rgb, IntoColor, LabHue, Lch, Srgb};
 use std::collections::{HashMap, VecDeque};
@@ -6,14 +6,14 @@ use std::f32;
 use std::fs::File;
 use std::process;
 
-pub fn display(centroids: &VecDeque<CentroidPixel>, name: &str) {
+pub fn display(centroids: &VecDeque<Centroid>, name: &str) {
 	let k = centroids.len();
 	let imgx = k * 100;
 	let imgy = 400;
 	let mut centroid_rgb: VecDeque<(u8, u8, u8)> = VecDeque::with_capacity(centroids.len());
 	for c in centroids {
-		let _lch = c.p.base_colors;
-		let lch: Lch = Lch::new(_lch.0, _lch.1, LabHue::from(_lch.2));
+		let _lch = &c.location;
+		let lch: Lch = Lch::new(_lch.l, _lch.c, LabHue::from(_lch.h));
 		let rgb: rgb::Rgb<rgb::Linear> = lch.into_rgb();
 		centroid_rgb.insert(
 			0,
@@ -42,22 +42,22 @@ pub fn display(centroids: &VecDeque<CentroidPixel>, name: &str) {
 
 /*
 fn centroid(points: HashMap<Pixel, u32>, k: usize) -> HashMap<Pixel, u32> {
-    let mut r: u8 = 0_u8;
-    let mut g: u8 = 0_u8;
-    let mut b: u8 = 0_u8;
-    // let k: usize = points.len();
-    for p in 0_u8..(k/3) as u8{
-        let temp = points.get((3*p) as usize..(3*p+3) as usize).unwrap();
-        println!("r: {}, t: {}", r, temp[0]);
-        r += temp[0]/(k as u8);
-        g += temp[1]/(k as u8);
-        b += temp[2]/(k as u8);
-    }
-    return vec![r,g,b];
+	let mut r: u8 = 0_u8;
+	let mut g: u8 = 0_u8;
+	let mut b: u8 = 0_u8;
+	// let k: usize = points.len();
+	for p in 0_u8..(k/3) as u8{
+		let temp = points.get((3*p) as usize..(3*p+3) as usize).unwrap();
+		println!("r: {}, t: {}", r, temp[0]);
+		r += temp[0]/(k as u8);
+		g += temp[1]/(k as u8);
+		b += temp[2]/(k as u8);
+	}
+	return vec![r,g,b];
 }
  */
 
-pub fn load_image(name: String) -> VecDeque<ColorPixel> {
+pub fn load_image(name: String) -> VecDeque<Pixel> {
 	let img1 = open(name).unwrap();
 	let img2: Option<&RgbImage> = img1.as_rgb8();
 	if img2.is_none() {
@@ -75,17 +75,20 @@ pub fn load_image(name: String) -> VecDeque<ColorPixel> {
 		*count += 1;
 	}
 
-	let mut pixels: VecDeque<ColorPixel> = VecDeque::with_capacity(num_pixels);
+	let mut pixels: VecDeque<Pixel> = VecDeque::with_capacity(num_pixels);
 	for (_pixel, count) in &rgb_pixels {
 		let lch_color: Lch = Srgb::new(
 			f32::from(_pixel.0) / (256_f32),
 			f32::from(_pixel.1) / (256_f32),
 			f32::from(_pixel.2) / (256_f32),
 		).into();
-		let p = Pixel {
-			base_colors: (lch_color.l, lch_color.chroma, lch_color.hue.to_degrees()),
-		};
-		pixels.insert(0, ColorPixel { p, count: *count });
+		let p = Pixel::new(
+			lch_color.l,
+			lch_color.chroma,
+			lch_color.hue.to_degrees(),
+			*count,
+		);
+		pixels.push_front(p);
 	}
 	pixels
 }

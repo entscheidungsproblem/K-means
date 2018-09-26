@@ -12,9 +12,11 @@ pub mod images;
 
 use clap::App;
 use clustering::cluster_all;
-use clustering::init::kmeans_init;
-use data::{CentroidPixel, ColorPixel};
-use export::{print_css, print_json, print_sh, print_yaml, export_css, export_json, export_sh, export_yaml};
+use clustering::init::kmeans_pp_init;
+use data::{Centroid, Pixel};
+use export::{
+	export_css, export_json, export_sh, export_yaml, print_css, print_json, print_sh, print_yaml,
+};
 use images::load_image;
 
 use std::collections::VecDeque;
@@ -43,29 +45,27 @@ fn main() {
 		return;
 	}
 	let full_path: String = check.unwrap();
-	let pixels: VecDeque<ColorPixel> = load_image(full_path.clone());
-	let mut centroids: VecDeque<CentroidPixel> = kmeans_init(7_u8, &pixels);
-	//let white = CentroidPixel {p:Pixel{base_colors:(100.0, 0.0, 270.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
-	//let black = CentroidPixel {p:Pixel{base_colors:(0.0, 0.0, 0.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
+	let pixels: VecDeque<Pixel> = load_image(full_path.clone());
+	let mut centroids: VecDeque<Centroid> = kmeans_pp_init(7_u8, &pixels);
+	//let white = Centroid {p:Pixel{base_colors:(100.0, 0.0, 270.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
+	//let black = Centroid {p:Pixel{base_colors:(0.0, 0.0, 0.0)}, sum:(0.0, 0.0, 0.0), count:0_u32};
 	//centroids.insert(0, white);
 	//centroids.insert(0, black);
 	cluster_all(&pixels, &mut centroids, 50, 0.01);
-	
+
 	if let Some(print_matches) = matches.subcommand_matches("print") {
 		if print_matches.is_present("json") {
 			print_json(&centroids, &full_path);
-		} else if print_matches.is_present("yaml"){
+		} else if print_matches.is_present("yaml") {
 			print_yaml(&centroids, &full_path);
-		} else if print_matches.is_present("sh"){
+		} else if print_matches.is_present("sh") {
 			print_sh(&centroids, &full_path);
-		} else if print_matches.is_present("css"){
+		} else if print_matches.is_present("css") {
 			print_css(&centroids, &full_path);
 		} else {
 			println!("print needs an argument: (j)son, (y)aml, (c)ss, (s)h");
 		}
-
-	}
-	else{
+	} else {
 		if matches.is_present("json") {
 			export_json(&centroids, &full_path, "colors.json");
 		}
@@ -78,5 +78,5 @@ fn main() {
 		if matches.is_present("css") {
 			export_css(&centroids, &full_path, "colors.css");
 		}
-	}	
+	}
 }
