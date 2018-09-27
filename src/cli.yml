@@ -7,22 +7,20 @@ args:
         help: Sets the input file to use
         required: true
         index: 1
-    - json:
-        short: j
-        help: Saves json data
-    - yaml:
-        short: y
-        help: Saves yaml data
-    - sh:
+    - size:
+        help: Number of colors to extract
+        short: n
+        default_value: "8"
+    - sort:
+        help: Which way to sort colors (light/dark)
         short: s
-        help: Saves sh data
-    - css:
-        short: c
-        help: Saves css data
+        default_value: "dark"
+        possible_values: [ "dark", "light" ]
+
 
 subcommands:
     - print:
-        about: Prints output to files
+        about: Prints output
         args:
             - json:
                 short: j
@@ -36,3 +34,18 @@ subcommands:
             - css:
                 short: c
                 help: Prints css data
+    - save:
+        about: Saves output to files
+        args:
+            - json:
+                short: j
+                help: Saves json data
+            - yaml:
+                short: y
+                help: Saves yaml data
+            - sh:
+                short: s
+                help: Saves sh data
+            - css:
+                short: c
+                help: Saves css data

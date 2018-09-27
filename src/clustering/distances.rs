@@ -2,19 +2,24 @@ use data::{Centroid, Pixel};
 use std::collections::VecDeque;
 use std::f32;
 
-pub fn closest(p: &Pixel, points: &VecDeque<Centroid>, dist_func: &str) -> (u8, f32) {
-	let mut close_p: u8 = 0_u8;
+pub fn distance(p1: &Pixel, p2: &Pixel, dist_func: &str) -> f32 {
+	let out = match dist_func {
+			"euclidean" => euclidean_distance(p1, p2),
+			"cie00" => cie00_distance(p1, p2),
+			"cie94" => cie94_distance(p1, p2),
+			"contrast" => contrast_ratio(p1, p2),
+			_ => -1f32,
+	};
+	out
+}
+
+pub fn closest(p: &Pixel, points: &Vec<Centroid>, dist_func: &str) -> (u32, f32) {
+	let mut close_p: u32 = 0_u32;
 	let mut close_dist = f32::MAX;
 	for (counter, next_p) in points.iter().enumerate() {
-		let temp_dist: f32 = match dist_func {
-			"euclidean" => euclidean_distance(p, &next_p.location),
-			"cie00" => cie00_distance(p, &next_p.location),
-			"cie94" => cie94_distance(p, &next_p.location),
-			"contrast" => contrast_ratio(p, &next_p.location),
-			_ => -1f32,
-		};
+		let temp_dist: f32 = distance(p, &next_p.location, dist_func);
 		if close_dist > temp_dist {
-			close_p = counter as u8;
+			close_p = counter as u32;
 			close_dist = temp_dist;
 		}
 	}

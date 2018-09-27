@@ -5,7 +5,7 @@ use data::{Centroid, Pixel};
 use std::collections::VecDeque;
 use std::f32;
 
-fn cluster(pixels: &VecDeque<Pixel>, centroids: &mut VecDeque<Centroid>) {
+fn cluster(pixels: &VecDeque<Pixel>, centroids: &mut Vec<Centroid>) {
 	for (index, pixel) in pixels.iter().enumerate() {
 		let (i, _dist) = closest(&pixel, &centroids, "cie00");
 		let mut c = centroids.get_mut(i as usize).unwrap();
@@ -23,11 +23,11 @@ fn cluster(pixels: &VecDeque<Pixel>, centroids: &mut VecDeque<Centroid>) {
 
 pub fn cluster_all(
 	pixels: &VecDeque<Pixel>,
-	centroids: &mut VecDeque<Centroid>,
+	centroids: &mut Vec<Centroid>,
 	rounds: usize,
 	delta: f32,
 ) {
-	fn update(distance: &mut VecDeque<f32>, centroids: &VecDeque<Centroid>) -> f32 {
+	fn update(distance: &mut VecDeque<f32>, centroids: &Vec<Centroid>) -> f32 {
 		let mut _delta = 0.0;
 		for x in 0..centroids.len() {
 			let val = (centroids[x].location.l.powi(2)

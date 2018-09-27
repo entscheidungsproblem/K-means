@@ -7,9 +7,9 @@ use std::io::Write;
 fn hex(rgb_color: rgb::Rgb<rgb::Linear>) -> String {
 	format!(
 		"#{:0width$X}{:0width$X}{:0width$X}",
-		(rgb_color.red * 255.0) as u8,
-		(rgb_color.green * 255.0) as u8,
-		(rgb_color.blue * 255.0) as u8,
+		(rgb_color.red * 255.0) as u32,
+		(rgb_color.green * 255.0) as u32,
+		(rgb_color.blue * 255.0) as u32,
 		width = 2
 	)
 }
@@ -28,7 +28,7 @@ fn print_file(contents: &str) {
 
 // Json
 
-fn get_json(centroids: &VecDeque<Centroid>, full_path: &str) -> String {
+fn get_json(centroids: &Vec<Centroid>, full_path: &str) -> String {
 	let mut output = Vec::new();
 	writeln!(
 		&mut output,
@@ -53,19 +53,19 @@ fn get_json(centroids: &VecDeque<Centroid>, full_path: &str) -> String {
 	String::from_utf8(output).unwrap()
 }
 
-pub fn export_json(centroids: &VecDeque<Centroid>, full_path: &str, out_location: &str) {
+pub fn export_json(centroids: &Vec<Centroid>, full_path: &str, out_location: &str) {
 	let output: String = get_json(centroids, full_path);
 	export_file(output, out_location);
 }
 
-pub fn print_json(centroids: &VecDeque<Centroid>, full_path: &str) {
+pub fn print_json(centroids: &Vec<Centroid>, full_path: &str) {
 	let output: String = get_json(centroids, full_path);
 	print_file(&output);
 }
 
 // Yaml
 
-fn get_yaml(centroids: &VecDeque<Centroid>, full_path: &str) -> String {
+fn get_yaml(centroids: &Vec<Centroid>, full_path: &str) -> String {
 	let mut output = Vec::new();
 	writeln!(&mut output, "wallpaper: \"{}\"", full_path);
 	writeln!(&mut output, "colors:");
@@ -79,19 +79,19 @@ fn get_yaml(centroids: &VecDeque<Centroid>, full_path: &str) -> String {
 	String::from_utf8(output).unwrap()
 }
 
-pub fn export_yaml(centroids: &VecDeque<Centroid>, full_path: &str, out_location: &str) {
+pub fn export_yaml(centroids: &Vec<Centroid>, full_path: &str, out_location: &str) {
 	let output: String = get_yaml(centroids, full_path);
 	export_file(output, out_location);
 }
 
-pub fn print_yaml(centroids: &VecDeque<Centroid>, full_path: &str) {
+pub fn print_yaml(centroids: &Vec<Centroid>, full_path: &str) {
 	let output: String = get_yaml(centroids, full_path);
 	print_file(&output);
 }
 
 // Shell
 
-fn get_sh(centroids: &VecDeque<Centroid>, full_path: &str) -> String {
+fn get_sh(centroids: &Vec<Centroid>, full_path: &str) -> String {
 	let mut output = Vec::new();
 	writeln!(&mut output, "wallpaper=\'{}\'", full_path);
 
@@ -104,19 +104,19 @@ fn get_sh(centroids: &VecDeque<Centroid>, full_path: &str) -> String {
 	String::from_utf8(output).unwrap()
 }
 
-pub fn export_sh(centroids: &VecDeque<Centroid>, full_path: &str, out_location: &str) {
+pub fn export_sh(centroids: &Vec<Centroid>, full_path: &str, out_location: &str) {
 	let output: String = get_sh(centroids, full_path);
 	export_file(output, out_location);
 }
 
-pub fn print_sh(centroids: &VecDeque<Centroid>, full_path: &str) {
+pub fn print_sh(centroids: &Vec<Centroid>, full_path: &str) {
 	let output: String = get_sh(centroids, full_path);
 	print_file(&output);
 }
 
 // CSS
 
-fn get_css(centroids: &VecDeque<Centroid>, full_path: &str) -> String {
+fn get_css(centroids: &Vec<Centroid>, full_path: &str) -> String {
 	let mut output = Vec::new();
 	writeln!(&mut output, ":root {{");
 	writeln!(&mut output, "\t--wallpaper: url(\"{}\");", full_path);
@@ -131,12 +131,12 @@ fn get_css(centroids: &VecDeque<Centroid>, full_path: &str) -> String {
 	String::from_utf8(output).unwrap()
 }
 
-pub fn export_css(centroids: &VecDeque<Centroid>, full_path: &str, out_location: &str) {
+pub fn export_css(centroids: &Vec<Centroid>, full_path: &str, out_location: &str) {
 	let output: String = get_css(centroids, full_path);
 	export_file(output, out_location);
 }
 
-pub fn print_css(centroids: &VecDeque<Centroid>, full_path: &str) {
+pub fn print_css(centroids: &Vec<Centroid>, full_path: &str) {
 	let output: String = get_css(centroids, full_path);
 	print_file(&output);
 }

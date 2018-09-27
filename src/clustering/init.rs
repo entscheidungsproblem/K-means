@@ -5,14 +5,14 @@ use rand::{thread_rng, Rng};
 use std::collections::VecDeque;
 use std::f32;
 
-pub fn kmeans_pp_init(k: u8, pixels: &VecDeque<Pixel>) -> VecDeque<Centroid> {
-	let mut centroids: VecDeque<Centroid> = VecDeque::with_capacity(k as usize);
+pub fn kmeans_pp_init(k: u32, pixels: &VecDeque<Pixel>) -> Vec<Centroid> {
+	let mut centroids: Vec<Centroid> = Vec::with_capacity(k as usize);
 
 	let mut rng = thread_rng();
 	let between = Range::new(0, pixels.len());
 	let i = between.ind_sample(&mut rng);
 	let pixel = pixels.get(i).unwrap();
-	centroids.push_front(Centroid::new(pixel.l, pixel.c, pixel.h));
+	centroids.push(Centroid::new(pixel.l, pixel.c, pixel.h));
 
 	for _x in 1..k {
 		let mut distances: VecDeque<f32> = VecDeque::with_capacity(k as usize);
@@ -30,7 +30,7 @@ pub fn kmeans_pp_init(k: u8, pixels: &VecDeque<Pixel>) -> VecDeque<Centroid> {
 			sum -= &distances[p];
 			if sum < 0_f32 {
 				let pixel = &pixels[p];
-				centroids.push_front(Centroid::new(pixel.l, pixel.c, pixel.h));
+				centroids.push(Centroid::new(pixel.l, pixel.c, pixel.h));
 				break;
 			}
 		}
@@ -39,10 +39,10 @@ pub fn kmeans_pp_init(k: u8, pixels: &VecDeque<Pixel>) -> VecDeque<Centroid> {
 }
 
 /*
-pub fn kmeans_init(k: u8, pixels: &VecDeque<Pixel>) -> VecDeque<Centroid> {
+pub fn kmeans_init(k: u32, pixels: &VecDeque<Pixel>) -> Vec<Centroid> {
 	let mut rng = thread_rng();
 	let r = Range::new(0, pixels.len());
-	let mut centroid: VecDeque<Centroid> = VecDeque::with_capacity(k as usize);
+	let mut centroid: Vec<Centroid> = VecDeque::with_capacity(k as usize);
 	for _x in 0..k {
 		let i = r.ind_sample(&mut rng);
 		let p = pixels.get(i).unwrap();

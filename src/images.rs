@@ -6,7 +6,7 @@ use std::f32;
 use std::fs::File;
 use std::process;
 
-pub fn display(centroids: &VecDeque<Centroid>, name: &str) {
+pub fn display(centroids: &Vec<Centroid>, name: &str) {
 	let k = centroids.len();
 	let imgx = k * 100;
 	let imgy = 400;
@@ -42,16 +42,16 @@ pub fn display(centroids: &VecDeque<Centroid>, name: &str) {
 
 /*
 fn centroid(points: HashMap<Pixel, u32>, k: usize) -> HashMap<Pixel, u32> {
-	let mut r: u8 = 0_u8;
-	let mut g: u8 = 0_u8;
-	let mut b: u8 = 0_u8;
+	let mut r: u32 = 0_u32;
+	let mut g: u32 = 0_u32;
+	let mut b: u32 = 0_u32;
 	// let k: usize = points.len();
-	for p in 0_u8..(k/3) as u8{
+	for p in 0_u32..(k/3) as u32{
 		let temp = points.get((3*p) as usize..(3*p+3) as usize).unwrap();
 		println!("r: {}, t: {}", r, temp[0]);
-		r += temp[0]/(k as u8);
-		g += temp[1]/(k as u8);
-		b += temp[2]/(k as u8);
+		r += temp[0]/(k as u32);
+		g += temp[1]/(k as u32);
+		b += temp[2]/(k as u32);
 	}
 	return vec![r,g,b];
 }

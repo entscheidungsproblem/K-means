@@ -1,14 +1,20 @@
+use clustering::cluster_all;
+use clustering::init::kmeans_pp_init;
+use clustering::distances::distance;
 use palette::{rgb, IntoColor, LabHue, Lch};
 use std::collections::VecDeque;
 use std::f32;
+
+use std::fmt::Write as FmtWrite;
+use std::io::Write as IoWrite;
 
 pub struct Pixel {
 	pub l: f32,
 	pub c: f32,
 	pub h: f32,
-	pub r: Option<u8>,
-	pub g: Option<u8>,
-	pub b: Option<u8>,
+	pub r: Option<u32>,
+	pub g: Option<u32>,
+	pub b: Option<u32>,
 	pub count: u32,
 }
 
@@ -29,9 +35,9 @@ impl Pixel {
 			let _lch: Lch = Lch::new(self.l, self.c, LabHue::from(self.h));
 			let _rgb: rgb::Rgb<rgb::Linear> = _lch.into_rgb();
 			//let _rgb: rgb::Rgb = rgb::Rgb::from(_lch).from_linear();
-			self.r = Some((_rgb.red * 255.0) as u8);
-			self.g = Some((_rgb.green * 255.0) as u8);
-			self.b = Some((_rgb.blue * 255.0) as u8);
+			self.r = Some((_rgb.red * 255.0) as u32);
+			self.g = Some((_rgb.green * 255.0) as u32);
+			self.b = Some((_rgb.blue * 255.0) as u32);
 		}
 	}
 	pub fn print_hex(&mut self) -> String {
@@ -88,7 +94,91 @@ impl Centroid {
 	}
 }
 
-struct kmeans {
+pub struct kmeans {
 	pub pixels: VecDeque<Pixel>,
-	pub centroids: VecDeque<Centroid>,
+	pub centroids: Vec<Centroid>,
+	dist_func: String,
+}
+
+impl kmeans {
+	pub fn new(size: u32, pixels: VecDeque<Pixel> , dist_func: String) -> kmeans {
+		let centroids = kmeans_pp_init(size, &pixels);
+		kmeans {pixels, centroids, dist_func}
+	}
+	pub fn sort(&mut self, dark: bool) {
+		let white = Pixel::new(100.0, 0.0, 270.0, 0_u32);
+		let black = Pixel::new(0.0, 0.0, 0.0, 0_u32);
+		let dist = &self.dist_func;
+		if dark {
+			self.centroids.sort_unstable_by_key(|k| distance(&white, &k.location, dist) as u32);
+		} else {
+			self.centroids.sort_unstable_by_key(|k| distance(&black, &k.location, dist) as u32);
+		}
+	}
+	pub fn filter(&mut self, mut pixels: VecDeque<Pixel>) -> VecDeque<Pixel>{
+		let delta = 0.1;
+		let black = Pixel::new(0.0, 0.0, 0.0, 0_u32);
+		let mut to_remove = Vec::new();
+		for (index, pixel) in pixels.iter().enumerate(){
+			if distance(&black, &pixel, &self.dist_func) < delta {
+				to_remove.push(index);
+			}
+		}
+		// Remove items with largest indices first
+		to_remove.reverse();
+		for remove in to_remove {
+			pixels.remove(remove);
+		}
+		pixels
+	}
+	fn merge(&mut self, index1: u32, index2: u32) {
+		
+	}
+	fn split(&mut self, index: u32) {
+		
+	}
+	pub fn balance(&mut self) {
+
+	}
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	#[test]
+	fn sort_dark() {
+		let c1: Centroid = Centroid::new(100.0, 0.0, 0.0);	// White
+		let c2: Centroid = Centroid::new(0.0, 0.0, 0.0);	// Black
+		let c3: Centroid = Centroid::new(50.0, 0.0, 0.0);	// Grey
+		let mut centroids = Vec::new();
+		centroids.push(c3);
+		centroids.push(c2);
+		centroids.push(c1);
+		let mut km: kmeans = kmeans{pixels:VecDeque::new(), centroids, dist_func:String::from("cie00")};
+		km.sort(true);
+		let mut output: String = String::new();;
+		for mut c in km.centroids{
+			writeln!(&mut output, "{}", c.location.print_hex()).unwrap();
+		}
+		assert_eq!(output, "FFFEFF\n2E2E2E\n000000\n");
+	}
+
+	#[test]
+	fn sort_light() {
+		let c1: Centroid = Centroid::new(100.0, 0.0, 0.0);	// White
+		let c2: Centroid = Centroid::new(0.0, 0.0, 0.0);	// Black
+		let c3: Centroid = Centroid::new(50.0, 0.0, 0.0);	// Grey
+		let mut centroids = Vec::new();
+		centroids.push(c3);
+		centroids.push(c2);
+		centroids.push(c1);
+		let mut km: kmeans = kmeans{pixels:VecDeque::new(), centroids, dist_func:String::from("cie00")};
+		km.sort(false);
+		let mut output: String = String::new();;
+		for mut c in km.centroids{
+			writeln!(&mut output, "{}", c.location.print_hex()).unwrap();
+		}
+		assert_eq!(output, "000000\n2E2E2E\nFFFEFF\n");
+	}
 }
