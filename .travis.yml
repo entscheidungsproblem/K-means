@@ -59,7 +59,7 @@ script:
   fi
 - if [[ $RELEASE ]]; then
   echo "Building optimized version for release";
-  docker run --rm -it -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder cargo build --release --verbose
+  docker run --rm -it -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder cargo build --release --verbose;
   else
   cargo build --verbose;
   fi
